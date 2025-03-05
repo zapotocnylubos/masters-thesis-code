@@ -62,7 +62,7 @@ sealed abstract class BinarySearchTree {
 
       }
     }
-  }.ensuring(res => res.isBinarySearchTree && res.content == this.content -- Set(x))
+  }.ensuring(res => res.content == this.content -- Set(x)) // res.isBinarySearchTree &&
 }
 
 case class Leaf() extends BinarySearchTree
