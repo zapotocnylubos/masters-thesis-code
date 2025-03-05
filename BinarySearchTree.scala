@@ -52,8 +52,8 @@ sealed abstract class BinarySearchTree {
             case (Leaf(), Leaf()) => Leaf()
             case (Leaf(), Node(_, _, _)) => r
             case (Node(_, _, _), Leaf()) => l
-            case (Node(_, _, _), Node(_, _, _)) => {
-              val m = r.min
+            case (Node(_, _, _), rn: Node) => {
+              val m = rn.min
               Node(m, l, r.delete(m))
             }
           }
@@ -62,7 +62,7 @@ sealed abstract class BinarySearchTree {
 
       }
     }
-  }.ensuring(res => res.content == content -- Set(x)) // && res.isBinarySearchTree)
+  }.ensuring(res => res.content == content -- Set(x) && res.isBinarySearchTree)
 }
 
 case class Leaf() extends BinarySearchTree
