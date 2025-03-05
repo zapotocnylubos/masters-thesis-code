@@ -42,27 +42,27 @@ sealed abstract class BinarySearchTree {
     }
   }.ensuring(res => res.isBinarySearchTree && res.content == content ++ Set(x))
 
-    def delete(x: Int): BinarySearchTree = {
-      require(isBinarySearchTree)
-      this match {
-        case Leaf() => this
-        case Node(v, l, r) => {
-          if (x == v) {
-            (l, r) match {
-              case (Leaf(), Leaf()) => Leaf()
-              case (Leaf(), Node(_, _, _)) => r
-              case (Node(_, _, _), Leaf()) => l
-              case (Node(_, _, _), rn: Node) => {
-                val m = rn.min
-                Node(m, l, r.delete(m))
-              }
+  def delete(x: Int): BinarySearchTree = {
+    require(isBinarySearchTree)
+    this match {
+      case Leaf() => this
+      case Node(v, l, r) => {
+        if (x == v) {
+          (l, r) match {
+            case (Leaf(), Leaf()) => Leaf()
+            case (Leaf(), Node(_, _, _)) => r
+            case (Node(_, _, _), Leaf()) => l
+            case (Node(_, _, _), rn: Node) => {
+              val m = rn.min
+              Node(m, l, r.delete(m))
             }
-          } else if (x < v) Node(v, l.delete(x), r)
-          else Node(v, l, r.delete(x))
+          }
+        } else if (x < v) Node(v, l.delete(x), r)
+        else Node(v, l, r.delete(x))
 
-        }
       }
-    }.ensuring(res => res.content == content -- Set(x) && res.isBinarySearchTree)
+    }
+  }.ensuring(res => res.content == content -- Set(x) && res.isBinarySearchTree)
 }
 
 case class Leaf() extends BinarySearchTree
