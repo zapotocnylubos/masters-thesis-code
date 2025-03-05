@@ -13,8 +13,8 @@ sealed abstract class BinarySearchTree {
     case Node(v, l, r) => {
       l.isBinarySearchTree &&
         r.isBinarySearchTree &&
-        l.content.forall(_ < v) &&
-        r.content.forall(_ > v)
+        forall((x: Int) => l.content.contains(x) ==> x < v) &&
+        forall((x: Int) => r.content.contains(x) ==> x > v)
     }
   }
 
