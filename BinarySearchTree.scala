@@ -42,27 +42,27 @@ sealed abstract class BinarySearchTree {
     }
   }.ensuring(res => res.isBinarySearchTree && res.content == content ++ Set(x))
 
-  //  def delete(x: Int): BinarySearchTree = ({
-  //    require(isBinarySearchTree)
-  //    this match {
-  //      case Leaf() => this
-  //      case Node(v, l, r) => {
-  //        if (x == v) {
-  //          (l, r) match {
-  //            case (Leaf(), Leaf()) => Leaf()
-  //            case (Leaf(), Node(vr, _, _)) => Node(vr, Leaf(), Leaf())
-  //            case (Node(vl, _, _), Leaf()) => Node(vl, Leaf(), Leaf())
-  //            case (Node(vl, _, _), Node(vr, _, _)) => {
-  //              val min = r.min
-  //              Node(min, l, r.delete(min))
-  //            }
-  //          }
-  //        } else if (x < v) Node(v, l.delete(x), r)
-  //        else Node(v, l, r.delete(x))
-  //
-  //      }
-  //    }
-  //  }).ensuring(res => res.isBinarySearchTree && res.content == this.content -- Set(x))
+  def delete(x: Int): BinarySearchTree = {
+    require(isBinarySearchTree)
+    this match {
+      case Leaf() => this
+      case Node(v, l, r) => {
+        if (x == v) {
+          (l, r) match {
+            case (Leaf(), Leaf()) => Leaf()
+            case (Leaf(), Node(_, _, _)) => r
+            case (Node(_, _, _), Leaf()) => l
+            case (Node(_, _, _), r2: Node) => {
+              val m = r2.min
+              Node(m, l, r2.delete(m))
+            }
+          }
+        } else if (x < v) Node(v, l.delete(x), r)
+        else Node(v, l, r.delete(x))
+
+      }
+    }
+  }.ensuring(res => res.isBinarySearchTree && res.content == this.content -- Set(x))
 }
 
 case class Leaf() extends BinarySearchTree
@@ -73,19 +73,19 @@ case class Node
   left: BinarySearchTree,
   right: BinarySearchTree,
 ) extends BinarySearchTree {
-    def min: Int = {
-      require(isBinarySearchTree)
-      this match {
-        case Node(v, Leaf(), _) => v
-        case Node(_, l: Node, _) => l.min
-      }
-    }.ensuring (res => contains(res) && forall((x: Int) => contains(x) ==> res <= x))
+  def min: Int = {
+    require(isBinarySearchTree)
+    this match {
+      case Node(v, Leaf(), _) => v
+      case Node(_, l: Node, _) => l.min
+    }
+  }.ensuring(res => contains(res) && forall((x: Int) => contains(x) ==> res <= x))
 
-    def max: Int = {
-      require(isBinarySearchTree)
-      this match {
-        case Node(v, _, Leaf()) => v
-        case Node(_, _, r: Node) => r.max
-      }
-    }.ensuring (res => contains(res) && forall((x: Int) => contains(x) ==> x <= res))
+  def max: Int = {
+    require(isBinarySearchTree)
+    this match {
+      case Node(v, _, Leaf()) => v
+      case Node(_, _, r: Node) => r.max
+    }
+  }.ensuring(res => contains(res) && forall((x: Int) => contains(x) ==> x <= res))
 }
