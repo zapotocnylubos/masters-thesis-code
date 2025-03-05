@@ -30,28 +30,17 @@ sealed abstract class BinarySearchTree {
     }
   }.ensuring(res => res == content.contains(x))
 
-  // Node(268436689,
-  //   Node(205521960,
-  //     Leaf(),
-  //     Node(341835778, Leaf(), Leaf())
-  //   ),
-  //   Node(268436728,
-  //     Node(201327776, Leaf(), Leaf()),
-  //     Node(270599420, Leaf(), Leaf())
-  //   )
-  // )
-
-//  def insert(x: Int): BinarySearchTree = ({
-//    require(isBinarySearchTree)
-//    this match {
-//      case Leaf() => Node(x, Leaf(), Leaf())
-//      case Node(v, l, r) => {
-//        if (x == v) this
-//        else if (x < v) Node(v, l.insert(x), r)
-//        else Node(v, l, r.insert(x))
-//      }
-//    }
-//  }).ensuring(res => res.isBinarySearchTree && res.content == this.content ++ Set(x))
+  def insert(x: Int): BinarySearchTree = {
+    require(isBinarySearchTree)
+    this match {
+      case Leaf() => Node(x, Leaf(), Leaf())
+      case Node(v, l, r) => {
+        if (x == v) this
+        else if (x < v) Node(v, l.insert(x), r)
+        else Node(v, l, r.insert(x))
+      }
+    }
+  }.ensuring(res => res.isBinarySearchTree && res.content == content ++ Set(x))
 
   //  def delete(x: Int): BinarySearchTree = ({
   //    require(isBinarySearchTree)
@@ -84,11 +73,19 @@ case class Node
   left: BinarySearchTree,
   right: BinarySearchTree,
 ) extends BinarySearchTree {
-  //  def min: Int = {
-  //    require(isBinarySearchTree)
-  //    this match {
-  //      case Node(v, Leaf(), _) => v
-  //      case Node(_, l: Node, _) => l.min
-  //    }
-  //  }.ensuring (res => contains(res)) // && content.forall(res <= _)
+    def min: Int = {
+      require(isBinarySearchTree)
+      this match {
+        case Node(v, Leaf(), _) => v
+        case Node(_, l: Node, _) => l.min
+      }
+    }.ensuring (res => contains(res) && forall((x: Int) => contains(x) ==> res <= x))
+
+    def max: Int = {
+      require(isBinarySearchTree)
+      this match {
+        case Node(v, _, Leaf()) => v
+        case Node(_, _, r: Node) => r.max
+      }
+    }.ensuring (res => contains(res) && forall((x: Int) => contains(x) ==> x <= res))
 }
