@@ -3,26 +3,19 @@ import stainless.collection._
 import stainless.annotation._
 
 sealed abstract class BinarySearchTree {
-  def isBinarySearchTree: Boolean = this match {
-    case Leaf() => true
-    case Node(v, l, r) => {
-      l.isBinarySearchTree && r.isBinarySearchTree && {
-        l match {
-          case Leaf() => true
-          case Node(vl, _, _) => vl < v
-        }
-      } && {
-        r match {
-          case Leaf() => true
-          case Node(vr, _, _) => v < vr
-        }
-      }
-    }
-  }
-
   def content: Set[Int] = this match {
     case Leaf() => Set.empty
     case Node(v, l, r) => l.content ++ Set(v) ++ r.content
+  }
+
+  def isBinarySearchTree: Boolean = this match {
+    case Leaf() => true
+    case Node(v, l, r) => {
+      l.isBinarySearchTree &&
+        r.isBinarySearchTree &&
+        l.content.forall(_ < v) &&
+        r.content.forall(_ > v)
+    }
   }
 
   def contains(x: Int): Boolean = {
@@ -48,17 +41,17 @@ sealed abstract class BinarySearchTree {
   //   )
   // )
 
-  def insert(x: Int): BinarySearchTree = ({
-    require(isBinarySearchTree)
-    this match {
-      case Leaf() => Node(x, Leaf(), Leaf())
-      case Node(v, l, r) => {
-        if (x == v) this
-        else if (x < v) Node(v, l.insert(x), r)
-        else Node(v, l, r.insert(x))
-      }
-    }
-  }).ensuring(res => res.isBinarySearchTree && res.content == this.content ++ Set(x))
+//  def insert(x: Int): BinarySearchTree = ({
+//    require(isBinarySearchTree)
+//    this match {
+//      case Leaf() => Node(x, Leaf(), Leaf())
+//      case Node(v, l, r) => {
+//        if (x == v) this
+//        else if (x < v) Node(v, l.insert(x), r)
+//        else Node(v, l, r.insert(x))
+//      }
+//    }
+//  }).ensuring(res => res.isBinarySearchTree && res.content == this.content ++ Set(x))
 
   //  def delete(x: Int): BinarySearchTree = ({
   //    require(isBinarySearchTree)
