@@ -42,27 +42,27 @@ sealed abstract class BinarySearchTree {
     }
   }.ensuring(res => res.isBinarySearchTree && res.content == content ++ Set(x))
 
-  def delete(x: Int): BinarySearchTree = {
-    require(isBinarySearchTree)
-    this match {
-      case Leaf() => this
-      case Node(v, l, r) => {
-        if (x == v) {
-          (l, r) match {
-            case (Leaf(), Leaf()) => Leaf()
-            case (Leaf(), Node(_, _, _)) => r
-            case (Node(_, _, _), Leaf()) => l
-            case (Node(_, _, _), rn: Node) => {
-              val m = rn.min
-              Node(m, l, r.delete(m))
+    def delete(x: Int): BinarySearchTree = {
+      require(isBinarySearchTree)
+      this match {
+        case Leaf() => this
+        case Node(v, l, r) => {
+          if (x == v) {
+            (l, r) match {
+              case (Leaf(), Leaf()) => Leaf()
+              case (Leaf(), Node(_, _, _)) => r
+              case (Node(_, _, _), Leaf()) => l
+              case (Node(_, _, _), rn: Node) => {
+                val m = rn.min
+                Node(m, l, r.delete(m))
+              }
             }
-          }
-        } else if (x < v) Node(v, l.delete(x), r)
-        else Node(v, l, r.delete(x))
+          } else if (x < v) Node(v, l.delete(x), r)
+          else Node(v, l, r.delete(x))
 
+        }
       }
-    }
-  }.ensuring(res => res.content == content -- Set(x) && res.isBinarySearchTree)
+    }.ensuring(res => res.content == content -- Set(x) && res.isBinarySearchTree)
 }
 
 case class Leaf() extends BinarySearchTree
@@ -79,7 +79,10 @@ case class Node
       case Node(v, Leaf(), _) => v
       case Node(_, l: Node, _) => l.min
     }
-  }.ensuring(res => contains(res) && forall((x: Int) => contains(x) ==> res <= x))
+  }.ensuring(res =>
+    content.contains(res) &&
+      forall((x: Int) => (content.contains(x) && x != res) ==> x > res)
+  )
 
   def max: Int = {
     require(isBinarySearchTree)
@@ -87,5 +90,8 @@ case class Node
       case Node(v, _, Leaf()) => v
       case Node(_, _, r: Node) => r.max
     }
-  }.ensuring(res => contains(res) && forall((x: Int) => contains(x) ==> x <= res))
+  }.ensuring(res =>
+    contains(res) &&
+      forall((x: Int) => (contains(x) && x != res) ==> x < res)
+  )
 }
