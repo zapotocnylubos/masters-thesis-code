@@ -13,9 +13,12 @@ sealed abstract class AVLTree {
     case Node(_, _, _, h) => h
   }
 
-  def balanceFactor: Int = this match {
-    case Leaf() => 0
-    case Node(_, l, r, _) => l.height - r.height
+  def balanceFactor: Int = {
+    require(isAVLTree)
+    this match {
+      case Leaf() => 0
+      case Node(_, l, r, _) => l.height - r.height
+    }
   }
 
   def isAVLTree: Boolean = this match {
@@ -27,7 +30,12 @@ sealed abstract class AVLTree {
         forall((x: Int) => r.content.contains(x) ==> x > v) &&
         balanceFactor >= -1 &&
         balanceFactor <= 1 &&
-        h == 1 + (l.height max r.height)
+        l.height < Int.MaxValue - 1 &&
+        r.height < Int.MaxValue - 1 &&
+        h == 1 + (l.height < r.height match {
+          case true => r.height
+          case false => l.height
+        })
     }
   }
 
@@ -75,18 +83,18 @@ case class Node
       forall((x: Int) => (contains(x) && x != res) ==> x < res)
   )
 
-//  def rotateLeft: AVLTree = {
-//    require(left.isAVLTree && right.isAVLTree)
-//    require(balanceFactor == 2 && right.balanceFactor == 1)
-//
-//    right match {
-//      case Node(v, rl, rr, _) =>
-//        Node(
-//          v,
-//          Node(value, left, rl, 1 + (left.height max rl.height)),
-//          rr,
-//          1 + (value max rr.height)
-//        )
-//    }
-//  }.ensuring(res => res.isAVLTree && res.content == content && res.height == height)
+  //  def rotateLeft: AVLTree = {
+  //    require(left.isAVLTree && right.isAVLTree)
+  //    require(balanceFactor == 2 && right.balanceFactor == 1)
+  //
+  //    right match {
+  //      case Node(v, rl, rr, _) =>
+  //        Node(
+  //          v,
+  //          Node(value, left, rl, 1 + (left.height max rl.height)),
+  //          rr,
+  //          1 + (value max rr.height)
+  //        )
+  //    }
+  //  }.ensuring(res => res.isAVLTree && res.content == content && res.height == height)
 }
