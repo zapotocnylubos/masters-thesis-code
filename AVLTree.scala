@@ -28,12 +28,12 @@ sealed abstract class AVLTree {
         // Ensure that the AVL has a binary search tree structure
         forall((x: Int) => l.content.contains(x) ==> x < v) &&
         forall((x: Int) => r.content.contains(x) ==> x > v) &&
-        // Ensure that the balance factor is within [-1, 1]
-        balanceFactor >= -1 &&
-        balanceFactor <= 1 &&
         // Ensure that the height of the tree at most (at root) is Int.MaxValue
         l.height < Int.MaxValue &&
         r.height < Int.MaxValue &&
+        // Ensure that the balance factor is within [-1, 1]
+        balanceFactor >= -1 &&
+        balanceFactor <= 1 &&
         // Ensure that the height of the tree is correct
         h == 1 + (l.height < r.height match {
           case true => r.height
@@ -64,6 +64,8 @@ case class Node
   right: AVLTree,
   _height: Int
 ) extends AVLTree {
+  require(_height > 0)
+
   def min: Int = {
     require(isAVLTree)
     this match {
