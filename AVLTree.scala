@@ -14,7 +14,6 @@ sealed abstract class AVLTree {
   }
 
   def balanceFactor: Int = {
-    require(isAVLTree)
     this match {
       case Leaf() => 0
       case Node(_, l, r, _) => l.height - r.height
@@ -26,12 +25,16 @@ sealed abstract class AVLTree {
     case Node(v, l, r, h) => {
       l.isAVLTree &&
         r.isAVLTree &&
+        // Ensure that the AVL has a binary search tree structure
         forall((x: Int) => l.content.contains(x) ==> x < v) &&
         forall((x: Int) => r.content.contains(x) ==> x > v) &&
+        // Ensure that the balance factor is within [-1, 1]
         balanceFactor >= -1 &&
         balanceFactor <= 1 &&
-        l.height < Int.MaxValue - 1 &&
-        r.height < Int.MaxValue - 1 &&
+        // Ensure that the height of the tree at most (at root) is Int.MaxValue
+        l.height < Int.MaxValue &&
+        r.height < Int.MaxValue &&
+        // Ensure that the height of the tree is correct
         h == 1 + (l.height < r.height match {
           case true => r.height
           case false => l.height
@@ -59,7 +62,7 @@ case class Node
   value: Int,
   left: AVLTree,
   right: AVLTree,
-  override val height: Int
+  _height: Int
 ) extends AVLTree {
   def min: Int = {
     require(isAVLTree)
