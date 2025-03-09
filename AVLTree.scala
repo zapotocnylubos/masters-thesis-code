@@ -82,6 +82,77 @@ sealed abstract class AVLTree {
       }
     }
   }.ensuring(res => res == content.contains(x))
+
+//  def insert(x: Int): AVLTree = {
+//    require(isAVLTree)
+//    require(height < Int.MaxValue)
+//
+//    this match {
+//      case Leaf() => Node(x, Leaf(), Leaf(), 1)
+//      case Node(v, l, r, _) => {
+//        if (x == v) this
+//        else if (x < v) {
+//          val newLeft = l.insert(x)
+//          val newHeight = 1 + int_max(newLeft.height, r.height)
+//          val newTree = Node(v, newLeft, r, newHeight)
+//          if (newTree.balanceFactor == 2) {
+//            if (newTree.right.balanceFactor == 1) newTree.rotateLeft
+//            else newTree.rotateRightLeft
+//          } else newTree
+//        } else {
+//          val newRight = r.insert(x)
+//          val newHeight = 1 + int_max(l.height, newRight.height)
+//          val newTree = Node(v, l, newRight, newHeight)
+//          if (newTree.balanceFactor == -2) {
+//            if (newTree.left.balanceFactor == -1) newTree.rotateRight
+//            else newTree.rotateLeftRight
+//          } else newTree
+//        }
+//      }
+//    }
+//  }.ensuring(res => res.isAVLTree && res.content == content ++ Set(x))
+
+//  def delete(x: Int): AVLTree = {
+//    require(isAVLTree)
+//    this match {
+//      case Leaf() => this
+//      case Node(v, l, r, _) => {
+//        if (x == v) {
+//          (l, r) match {
+//            case (Leaf(), Leaf()) => Leaf()
+//            case (Leaf(), Node(_, _, _, _)) => r
+//            case (Node(_, _, _, _), Leaf()) => l
+//            case (Node(_, _, _, _), rn: Node) => {
+//              val m = rn.min
+//              val newRight = r.delete(m)
+//              val newHeight = 1 + int_max(l.height, newRight.height)
+//              val newTree = Node(m, l, newRight, newHeight)
+//              if (newTree.balanceFactor == -2) {
+//                if (newTree.left.balanceFactor == -1) newTree.rotateRight
+//                else newTree.rotateLeftRight
+//              } else newTree
+//            }
+//          }
+//        } else if (x < v) {
+//          val newLeft = l.delete(x)
+//          val newHeight = 1 + int_max(newLeft.height, r.height)
+//          val newTree = Node(v, newLeft, r, newHeight)
+//          if (newTree.balanceFactor == -2) {
+//            if (newTree.left.balanceFactor == -1) newTree.rotateRight
+//            else newTree.rotateLeftRight
+//          } else newTree
+//        } else {
+//          val newRight = r.delete(x)
+//          val newHeight = 1 + int_max(l.height, newRight.height)
+//          val newTree = Node(v, l, newRight, newHeight)
+//          if (newTree.balanceFactor == 2) {
+//            if (newTree.right.balanceFactor == 1) newTree.rotateLeft
+//            else newTree.rotateRightLeft
+//          } else newTree
+//        }
+//      }
+//    }
+//  }.ensuring(res => res.isAVLTree && res.content == content -- Set(x))
 }
 
 case class Leaf() extends AVLTree
@@ -200,6 +271,23 @@ case class Node
               )
             )
         }
+    }
+  }.ensuring(res => res.content == content && res.isAVLTree)
+
+  def balance: Node = {
+    require(hasBinarySearchTreeStructure)
+    require(hasAVLTreeStructure)
+    require(left.isAVLTree && right.isAVLTree)
+    require(balanceFactor == 2 || balanceFactor == -2)
+    require((balanceFactor == 2) ==> (right.balanceFactor == 1 || right.balanceFactor == -1))
+    require((balanceFactor == -2) ==> (left.balanceFactor == 1 || left.balanceFactor == -1))
+
+    if (balanceFactor == 2) {
+      if (right.balanceFactor == 1) rotateLeft
+      else rotateRightLeft
+    } else {
+      if (left.balanceFactor == -1) rotateRight
+      else rotateLeftRight
     }
   }.ensuring(res => res.content == content && res.isAVLTree)
 }
