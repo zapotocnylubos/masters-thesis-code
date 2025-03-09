@@ -123,6 +123,16 @@ case class Node
     require(right.isAVLTree)
     require(right.isInstanceOf[Node])
 
+
+//    case Node(y, T2, T3, _)
+//    =>
+//    Node(
+//      key = y, // Right child becomes new root
+//      left = Node(x.key, x.left, T2, math.max(height(x.left), height(T2)) + 1), // Move T2 under x
+//      right = T3, // Right subtree remains unchanged
+//      height = math.max(height(T3), height(T2) + 1) + 1 // Update height
+//    )
+
     right match {
       case Node(v, rl, rr, _) =>
         Node(
@@ -132,9 +142,9 @@ case class Node
             case false => left.height
           })),
           rr,
-          1 + (value < rr.height match {
-            case true => rr.height
-            case false => value
+          1 + (rr.height < rl.height match {
+            case true => rl.height
+            case false => rr.height
           })
         )
     }
@@ -150,7 +160,8 @@ case class Node
     res.right.isBalanced &&
     res.left.balanceFactor >= -1 &&
     res.left.balanceFactor <= 3
-//    res.left.balanceFactor <= 2
+    && res.balanceFactor <= 5 // knowledge probing -> <= 30, 15, 10, 6, 5 -> OK, <= 4 -> NOK
+//    && res.left.balanceFactor <= 2
 //    res.left.balanceFactor <= 1
 //    res.left.isBalanced
   )
