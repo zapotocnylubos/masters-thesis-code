@@ -143,7 +143,9 @@ case class Node
     res.left.hasBinarySearchTreeStructure &&
     res.left.hasAVLTreeStructure &&
     res.right.hasBinarySearchTreeStructure &&
-    res.right.hasAVLTreeStructure
+    res.right.hasAVLTreeStructure &&
+    res.right.isBalanced &&
+    res.left.isBalanced
   )
    //&& res.isAVLTree)
 }
