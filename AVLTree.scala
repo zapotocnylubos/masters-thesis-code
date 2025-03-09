@@ -163,9 +163,9 @@ case class Node
     && res.balanceFactor <= 5 // knowledge probing -> <= 30, 15, 10, 6, 5 -> OK, <= 4 -> NOK
     // Knowledge probing about left rotation subtrees
     && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].left.isInstanceOf[Node])
-        ==> res.left.asInstanceOf[Node].left.asInstanceOf[Node].isBalanced)
+        ==> res.left.asInstanceOf[Node].left.asInstanceOf[Node].isAVLTree)
     && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].right.isInstanceOf[Node])
-        ==> res.left.asInstanceOf[Node].right.asInstanceOf[Node].isBalanced)
+        ==> res.left.asInstanceOf[Node].right.asInstanceOf[Node].isAVLTree)
 //    && res.left.balanceFactor <= 2
 //    res.left.balanceFactor <= 1
 //    res.left.isBalanced
