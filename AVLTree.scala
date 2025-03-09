@@ -166,6 +166,25 @@ case class Node
         ==> res.left.asInstanceOf[Node].left.asInstanceOf[Node].isAVLTree)
     && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].right.isInstanceOf[Node])
         ==> res.left.asInstanceOf[Node].right.asInstanceOf[Node].isAVLTree)
+    // Knowledge probing about right heigh of rotated node
+    && res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].height == 1 + (res.left.asInstanceOf[Node].left.height < res.left.asInstanceOf[Node].right.height match {
+      case true => res.left.asInstanceOf[Node].right.height
+      case false => res.left.asInstanceOf[Node].left.height
+    }))
+    && res.right.isInstanceOf[Node] ==> (res.right.asInstanceOf[Node].height == 1 + (res.right.asInstanceOf[Node].left.height < res.right.asInstanceOf[Node].right.height match {
+      case true => res.right.asInstanceOf[Node].right.height
+      case false => res.right.asInstanceOf[Node].left.height
+    }))
+    //
+    && res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].height == 1 + (res.left.asInstanceOf[Node].left.height < res.left.asInstanceOf[Node].right.height match {
+      case true => res.left.asInstanceOf[Node].right.height
+      case false => res.left.asInstanceOf[Node].left.height
+    }))
+    // knowledge probing about keeping height
+    && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].left.isInstanceOf[Node])
+      ==> (res.left.asInstanceOf[Node].left.asInstanceOf[Node].height == old(this).left.height))
+    && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].right.isInstanceOf[Node])
+      ==> (res.left.asInstanceOf[Node].right.asInstanceOf[Node].height == old(this).right.asInstanceOf[Node].left.height))
 //    && res.left.balanceFactor <= 2
 //    res.left.balanceFactor <= 1
 //    res.left.isBalanced
