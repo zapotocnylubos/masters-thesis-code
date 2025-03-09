@@ -18,7 +18,7 @@ sealed abstract class AVLTree {
   def balanceFactor: Int = {
     this match {
       case Leaf() => 0
-      case Node(_, l, r, _) => l.height - r.height
+      case Node(_, l, r, _) => r.height - l.height
     }
   }
 
@@ -117,6 +117,16 @@ case class Node
       forall((x: Int) => (contains(x) && x != res) ==> x < res)
   )
 
+  def t(): Boolean = {
+    require(isAVLTree)
+    left.height < height && right.height < height
+  }.holds
+
+  def t2(): Boolean = {
+    require(isAVLTree)
+    left.isInstanceOf[Node] ==> left.asInstanceOf[Node].left.height < height - 1
+  }.holds
+
   def rotateLeft: Node = {
     require(hasBinarySearchTreeStructure)
     require(hasAVLTreeStructure)
@@ -124,6 +134,9 @@ case class Node
     require(left.isAVLTree)
     require(right.isAVLTree)
     require(right.isInstanceOf[Node])
+    // this helps?
+//    require(height < Int.MaxValue)
+    require(height < Int.MaxValue - 10)
 
 
     //    node* leftRotation(node* current) {
@@ -134,6 +147,7 @@ case class Node
     //        new_node->height = 1 + max(height(new_node->left), height(new_node->right));
     //        return new_node;
     //    }
+
 
     right match {
       case Node(rv, rl, rr, _) =>
@@ -189,7 +203,8 @@ case class Node
 //    && res.left.isInstanceOf[Node] ==> ((res.left.asInstanceOf[Node].left.height - res.left.asInstanceOf[Node].right.height) <= 2)
 //    && res.left.balanceFactor <= 2
 //    res.left.balanceFactor <= 1
-//    res.left.isBalanced
+    && res.left.isBalanced
+    && res.isAVLTree
   )
    //&& res.isAVLTree)
 }
