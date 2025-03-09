@@ -137,7 +137,13 @@ case class Node
     }
   }.ensuring(res => res.content == content &&
     res.right.isAVLTree &&
-    res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].value == old(this).value)
+    res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].value == old(this).value) &&
+    res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].left == old(this).left) &&
+    res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].right == old(this).right.asInstanceOf[Node].left) &&
+    res.left.hasBinarySearchTreeStructure &&
+    res.left.hasAVLTreeStructure &&
+    res.right.hasBinarySearchTreeStructure &&
+    res.right.hasAVLTreeStructure
   )
    //&& res.isAVLTree)
 }
