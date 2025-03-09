@@ -115,7 +115,7 @@ case class Node
       forall((x: Int) => (contains(x) && x != res) ==> x < res)
   )
 
-  def rotateLeft: AVLTree = {
+  def rotateLeft: Node = {
     require(hasBinarySearchTreeStructure)
     require(hasAVLTreeStructure)
     require(balanceFactor == 2 && right.balanceFactor == 1)
@@ -135,5 +135,9 @@ case class Node
           })
         )
     }
-  }.ensuring(res => res.content == content) //&& res.isAVLTree)
+  }.ensuring(res => res.content == content &&
+    res.right.isAVLTree &&
+    res.left.isInstanceOf[Node] ==> (res.left.asInstanceOf[Node].value == old(this).value)
+  )
+   //&& res.isAVLTree)
 }
