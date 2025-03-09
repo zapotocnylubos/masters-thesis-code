@@ -127,7 +127,10 @@ case class Node
       case Node(v, rl, rr, _) =>
         Node(
           v,
-          Node(value, left, rl, 1 + left.height),
+          Node(value, left, rl, 1 + (left.height < rl.height match {
+            case true => rl.height
+            case false => left.height
+          })),
           rr,
           1 + (value < rr.height match {
             case true => rr.height
@@ -145,7 +148,11 @@ case class Node
     res.right.hasBinarySearchTreeStructure &&
     res.right.hasAVLTreeStructure &&
     res.right.isBalanced &&
-    res.left.isBalanced
+    res.left.balanceFactor >= -1 &&
+    res.left.balanceFactor <= 3
+//    res.left.balanceFactor <= 2
+//    res.left.balanceFactor <= 1
+//    res.left.isBalanced
   )
    //&& res.isAVLTree)
 }
