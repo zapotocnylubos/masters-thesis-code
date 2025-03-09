@@ -2,6 +2,8 @@ import stainless.lang._
 import stainless.collection._
 import stainless.annotation._
 
+def int_max(x: Int, y: Int): Int = if (x > y) x else y
+
 sealed abstract class AVLTree {
   def content: Set[Int] = this match {
     case Leaf() => Set.empty
@@ -124,28 +126,25 @@ case class Node
     require(right.isInstanceOf[Node])
 
 
-//    case Node(y, T2, T3, _)
-//    =>
-//    Node(
-//      key = y, // Right child becomes new root
-//      left = Node(x.key, x.left, T2, math.max(height(x.left), height(T2)) + 1), // Move T2 under x
-//      right = T3, // Right subtree remains unchanged
-//      height = math.max(height(T3), height(T2) + 1) + 1 // Update height
-//    )
+    //    node* leftRotation(node* current) {
+    //        node* new_node = current->right;
+    //        current->right = new_node->left;
+    //        new_node->left = current;
+    //        current->height = 1 + max(height(current->left), height(current->right));
+    //        new_node->height = 1 + max(height(new_node->left), height(new_node->right));
+    //        return new_node;
+    //    }
 
     right match {
-      case Node(v, rl, rr, _) =>
+      case Node(rv, rl, rr, _) =>
         Node(
-          v,
-          Node(value, left, rl, 1 + (left.height < rl.height match {
-            case true => rl.height
-            case false => left.height
-          })),
+          rv,
+          Node(value, left, rl, 1 + int_max(left.height, rl.height)),
           rr,
-          1 + (rr.height < rl.height match {
-            case true => rl.height
-            case false => rr.height
-          })
+          1 + int_max(
+            1 + int_max(left.height, rl.height),
+            rr.height
+          )
         )
     }
   }.ensuring(res => res.content == content &&
@@ -185,6 +184,9 @@ case class Node
       ==> (res.left.asInstanceOf[Node].left.asInstanceOf[Node].height == old(this).left.height))
     && ((res.left.isInstanceOf[Node] && res.left.asInstanceOf[Node].right.isInstanceOf[Node])
       ==> (res.left.asInstanceOf[Node].right.asInstanceOf[Node].height == old(this).right.asInstanceOf[Node].left.height))
+    && res.left.isInstanceOf[Node] ==> (res.left.balanceFactor == (res.left.asInstanceOf[Node].left.height - res.left.asInstanceOf[Node].right.height))
+    && res.left.isInstanceOf[Node] ==> ((res.left.asInstanceOf[Node].left.height - res.left.asInstanceOf[Node].right.height) <= 2)
+//    && res.left.isInstanceOf[Node] ==> ((res.left.asInstanceOf[Node].left.height - res.left.asInstanceOf[Node].right.height) <= 2)
 //    && res.left.balanceFactor <= 2
 //    res.left.balanceFactor <= 1
 //    res.left.isBalanced
