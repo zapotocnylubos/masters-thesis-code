@@ -136,7 +136,7 @@ case class Node
     require(right.isInstanceOf[Node])
     // this helps?
 //    require(height < Int.MaxValue)
-    require(height < Int.MaxValue - 10)
+//    require(height < Int.MaxValue - 10)
 
 
     //    node* leftRotation(node* current) {
