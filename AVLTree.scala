@@ -136,4 +136,70 @@ case class Node
         )
     }
   }.ensuring(res => res.content == content && res.isAVLTree)
+
+  def rotateRight: Node = {
+    require(hasBinarySearchTreeStructure)
+    require(hasAVLTreeStructure)
+    require(left.isAVLTree && right.isAVLTree)
+    require(balanceFactor == -2 && left.balanceFactor == -1)
+
+    left match {
+      case Node(v, ll, lr, _) =>
+        Node(
+          v,
+          ll,
+          Node(value, lr, right, 1 + int_max(lr.height, right.height)),
+          1 + int_max(
+            1 + int_max(lr.height, right.height),
+            ll.height
+          )
+        )
+    }
+  }.ensuring(res => res.content == content && res.isAVLTree)
+
+  def rotateLeftRight: Node = {
+    require(hasBinarySearchTreeStructure)
+    require(hasAVLTreeStructure)
+    require(left.isAVLTree && right.isAVLTree)
+    require(balanceFactor == -2 && left.balanceFactor == 1)
+
+    left match {
+      case Node(v, ll, lr, _) =>
+        lr match {
+          case Node(vlr, lrl, lrr, _) =>
+            Node(
+              vlr,
+              Node(v, ll, lrl, 1 + int_max(ll.height, lrl.height)),
+              Node(value, lrr, right, 1 + int_max(lrr.height, right.height)),
+              1 + int_max(
+                1 + int_max(ll.height, lrl.height),
+                1 + int_max(lrr.height, right.height)
+              )
+            )
+        }
+    }
+  }.ensuring(res => res.content == content && res.isAVLTree)
+
+  def rotateRightLeft: Node = {
+    require(hasBinarySearchTreeStructure)
+    require(hasAVLTreeStructure)
+    require(left.isAVLTree && right.isAVLTree)
+    require(balanceFactor == 2 && right.balanceFactor == -1)
+
+    right match {
+      case Node(v, rl, rr, _) =>
+        rl match {
+          case Node(vrl, rll, rlr, _) =>
+            Node(
+              vrl,
+              Node(value, left, rll, 1 + int_max(left.height, rll.height)),
+              Node(v, rlr, rr, 1 + int_max(rlr.height, rr.height)),
+              1 + int_max(
+                1 + int_max(left.height, rll.height),
+                1 + int_max(rlr.height, rr.height)
+              )
+            )
+        }
+    }
+  }.ensuring(res => res.content == content && res.isAVLTree)
 }
