@@ -105,6 +105,37 @@ sealed abstract class AVLTree {
       && (res.height == height || res.height == height + 1)
       && res.content == content ++ Set(x)
   )
+
+  def delete(x: Int): AVLTree = {
+    require(isAVLTree)
+    this match {
+      case Leaf() => this
+      case Node(v, l, r, _) => {
+        if (x == v) {
+          (l, r) match {
+            case (Leaf(), Leaf()) => Leaf()
+            case (Leaf(), Node(_, _, _, _)) => r
+            case (Node(_, _, _, _), Leaf()) => l
+            case (Node(_, _, _, _), rn: Node) => {
+              val m = rn.min
+              val newRight = r.delete(m)
+              Node(m, l, newRight, 1 + int_max(l.height, newRight.height)).balance
+            }
+          }
+        } else if (x < v) {
+          val newLeft = l.delete(x)
+          Node(v, newLeft, r, 1 + int_max(newLeft.height, r.height)).balance
+        } else {
+          val newRight = r.delete(x)
+          Node(v, l, newRight, 1 + int_max(l.height, newRight.height)).balance
+        }
+      }
+    }
+  }.ensuring(res =>
+    res.isAVLTree
+      && (res.height == height || res.height == height - 1)
+      && res.content == content -- Set(x)
+  )
 }
 
 case class Leaf() extends AVLTree
