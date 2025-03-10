@@ -292,7 +292,25 @@ case class Node
   }.ensuring(res => res.content == content && res.isAVLTree)
 
   def B21(): Boolean = {
-    // counterexample: AVLTree -> Node(0, Leaf(), Leaf(), 1)
-    forall((t: AVLTree) => (t.isInstanceOf[Node] && t.balanceFactor == 2) ==> (t.asInstanceOf[Node].right.balanceFactor == 1 || t.asInstanceOf[Node].right.balanceFactor == -1))
+    Node(0, Leaf(), Leaf(), 1).balanceFactor == 0
+  }.holds
+
+  def B21v2(): Boolean = {
+    // counterexample??: AVLTree -> Node(0, Leaf(), Leaf(), 1)
+    // counterexample??: AVLTree -> Node(0, Node(0, Leaf(), Leaf(), 1), Leaf(), 1)
+    // now timeout, cant prove or find counterexample
+
+    forall((t: AVLTree) => (
+      t.isInstanceOf[Node]
+        && t.hasBinarySearchTreeStructure
+        && t.hasAVLTreeStructure
+        && t.asInstanceOf[Node].left.isAVLTree
+        && t.asInstanceOf[Node].right.isAVLTree
+        && t.balanceFactor == 2
+      ) ==> (
+      t.asInstanceOf[Node].right.balanceFactor == 1
+        || t.asInstanceOf[Node].right.balanceFactor == -1
+      )
+    )
   }.holds
 }
