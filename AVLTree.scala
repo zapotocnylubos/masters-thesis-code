@@ -192,7 +192,7 @@ case class Node
     require(hasBinarySearchTreeStructure)
     require(hasAVLTreeStructure)
     require(left.isAVLTree && right.isAVLTree)
-    require(balanceFactor == 2 && right.balanceFactor == 1)
+    require(balanceFactor == 2 && right.balanceFactor >= 0)
 
     right match {
       case Node(v, rl, rr, _) =>
@@ -212,7 +212,7 @@ case class Node
     require(hasBinarySearchTreeStructure)
     require(hasAVLTreeStructure)
     require(left.isAVLTree && right.isAVLTree)
-    require(balanceFactor == -2 && left.balanceFactor == -1)
+    require(balanceFactor == -2 && left.balanceFactor <= 0)
 
     left match {
       case Node(v, ll, lr, _) =>
@@ -279,15 +279,13 @@ case class Node
     require(hasAVLTreeStructure)
     require(left.isAVLTree && right.isAVLTree)
     require(-2 <= balanceFactor && balanceFactor <= 2)
-    require((balanceFactor == 2) ==> (right.balanceFactor == 1 || right.balanceFactor == -1))
-    require((balanceFactor == -2) ==> (left.balanceFactor == 1 || left.balanceFactor == -1))
 
     if (balanceFactor == 2) {
-      if (right.balanceFactor == 1) rotateLeft
-      else rotateRightLeft
+      if (right.balanceFactor == -1) rotateRightLeft
+      else rotateLeft
     } else if (balanceFactor == -2) {
-      if (left.balanceFactor == -1) rotateRight
-      else rotateLeftRight
+      if (left.balanceFactor == 1) rotateLeftRight
+      else rotateRight
     } else this
   }.ensuring(res => res.content == content && res.isAVLTree)
 
