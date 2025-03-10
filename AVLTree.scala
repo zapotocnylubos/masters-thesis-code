@@ -93,16 +93,18 @@ sealed abstract class AVLTree {
         if (x == v) this
         else if (x < v) {
           val newLeft = l.insert(x)
-          assert(newLeft.isAVLTree)
           Node(v, newLeft, r, 1 + int_max(newLeft.height, r.height)).balance
         } else {
           val newRight = r.insert(x)
-          assert(newRight.isAVLTree)
           Node(v, l, newRight, 1 + int_max(l.height, newRight.height)).balance
         }
       }
     }
-  }.ensuring(res => res.isAVLTree && res.content == content ++ Set(x))
+  }.ensuring(res =>
+    res.isAVLTree
+      && (res.height == height || res.height == height + 1)
+      && res.content == content ++ Set(x)
+  )
 }
 
 case class Leaf() extends AVLTree
