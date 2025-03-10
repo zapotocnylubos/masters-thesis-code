@@ -278,16 +278,21 @@ case class Node
     require(hasBinarySearchTreeStructure)
     require(hasAVLTreeStructure)
     require(left.isAVLTree && right.isAVLTree)
-    require(balanceFactor == 2 || balanceFactor == -2)
+    require(-2 <= balanceFactor && balanceFactor <= 2)
     require((balanceFactor == 2) ==> (right.balanceFactor == 1 || right.balanceFactor == -1))
     require((balanceFactor == -2) ==> (left.balanceFactor == 1 || left.balanceFactor == -1))
 
     if (balanceFactor == 2) {
       if (right.balanceFactor == 1) rotateLeft
       else rotateRightLeft
-    } else {
+    } else if (balanceFactor == -2) {
       if (left.balanceFactor == -1) rotateRight
       else rotateLeftRight
-    }
+    } else this
   }.ensuring(res => res.content == content && res.isAVLTree)
+
+  def B21(): Boolean = {
+    // counterexample: AVLTree -> Node(0, Leaf(), Leaf(), 1)
+    forall((t: AVLTree) => (t.isInstanceOf[Node] && t.balanceFactor == 2) ==> (t.asInstanceOf[Node].right.balanceFactor == 1 || t.asInstanceOf[Node].right.balanceFactor == -1))
+  }.holds
 }
