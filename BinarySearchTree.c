@@ -23,7 +23,9 @@ struct BSTNode {
     ( is_bst(t->left) &&
       is_bst(t->right) &&
       (\forall int x; bst_contains(t->left, x) ==> x < t->value) &&
-      (\forall int x; bst_contains(t->right, x) ==> x > t->value) );
+      (\forall int x; bst_contains(t->right, x) ==> x > t->value) &&
+
+    );
 */
 
 /*@
