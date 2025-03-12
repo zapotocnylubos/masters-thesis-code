@@ -12,7 +12,7 @@ typedef struct _list { int element; struct _list* next; } list;
         case next_reachable{L}:
             \forall list* root, *node;
                 \valid(root) ==>
-                    reachable(root−>next, node) ==>
+                    reachable(root->next, node) ==>
                         reachable(root,node);
     }
 */
@@ -29,30 +29,30 @@ typedef struct _list { int element; struct _list* next; } list;
     axiom length_cons{L}:
         \forall list* l, integer n;
             finite(l) && \valid(l) ==>
-                length(l) == length(l−>next) + 1;
+                length(l) == length(l->next) + 1;
     }
 */
 
 /*@
     requires \valid(root);
-    assigns \nothing;
     terminates finite(root);
+    assigns \nothing;
     ensures
         \forall list* l;
             \valid(l) && reachable(root,l) ==>
-                \result >= l−>element;
+                \result >= l->element;
     ensures
         \exists list* l;
-            \valid(l) && reachable(root,l) && \result == l−>element;
+            \valid(l) && reachable(root,l) && \result == l->element;
 */
 int max_list(list* root) {
-    int max = root−>element;
+    int max = root->element;
 
-    while(root−>next) {
-        root = root−>next;
+    while(root->next) {
+        root = root->next;
 
-        if (root−>element > max) {
-            max = root−>element;
+        if (root->element > max) {
+            max = root->element;
         }
     }
 
