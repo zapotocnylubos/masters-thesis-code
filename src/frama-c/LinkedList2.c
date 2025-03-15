@@ -87,8 +87,8 @@ int length(struct node *head) {
         p = p->next;
     }
 
-    // this fails, but - 10 does not fail and is proved??
-    //@ assert len <= length(head) - 10;
+    // -65 fails to prove, but -64 succeeds to prove??
+    //@ assert len <= length(head) - 65;
     // assert len >= 1;
 
     return len;
