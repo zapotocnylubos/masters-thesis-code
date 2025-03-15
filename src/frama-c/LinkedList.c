@@ -3,6 +3,31 @@
 // https://stackoverflow.com/questions/78862966/copy-a-singly-linked-list-with-frama-c
 // ACSL Mini-Tutorial Virgile Prevosto1 1 CEA LIST, Software Security Laboratory, Saclay, F-91191
 
+/*@
+    ensures \result >= x && \result >= y;
+    ensures \result == x || \result == y;
+*/
+int max (int x, int y) { return (x > y) ? x : y; }
+
+///*@
+//    requires \valid(p) && \valid(q);
+//    ensures *p<=*q;
+//*/
+
+/*@ requires \valid(p) && \valid(q);
+    ensures *p <= *q;
+    ensures
+        (*p == \old(*p) && *q == \old(*q)) ||
+        (*p == \old(*q) && *q == \old(*p));
+*/
+void max_ptr(int*p, int*q) {
+    if (*p > *q) {
+        int tmp = *p;
+        *p = *q;
+        *q = tmp;
+    }
+}
+
 typedef struct _list { int element; struct _list* next; } list;
 
 /*@

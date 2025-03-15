@@ -18,7 +18,7 @@ struct node {
 
 /*@
     logic integer length(struct node *head) =
-        head == \null ? 0 : 1 + length(head->next);
+        1 + length(head->next);
 */
 
 /*@
@@ -29,7 +29,7 @@ struct node {
 
         case next_reachable:
             \forall struct node *root, *node;
-                \valid(root) && reachable(root->next, node) ==>
+                reachable(root->next, node) ==>
                     reachable(root, node);
     }
 */
@@ -49,7 +49,7 @@ struct node {
 
 /*@ lemma length_nonnegative:
       \forall struct node *l;
-        finite(l) ==> length(l) >= 0;
+        length(l) >= 0;
 */
 
 /* axiomatic LengthProperties {
@@ -107,18 +107,13 @@ void test() {
     n2->next = NULL;
 
     //@ assert linked_list(NULL);
-
-    // !! here it goes wrong
-    //@ assert \valid(n2);
-    //@ assert linked_list(n2->next);
-    //@ assert linked_list(n2->next) ==> linked_list(n2);
-
     //@ assert linked_list(n2);
     //@ assert linked_list(n1);
     //@ assert linked_list(head);
-    // assert finite(head);
 
-    // assert length(head) == 3;
+    //@ assert finite(head);
+
+    //@ assert length(head) == 3;
 
     free(n2);
     free(n1);
