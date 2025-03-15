@@ -5,21 +5,21 @@ struct node {
     struct node *next;
 };
 
-/*@ inductive linked_list(struct node *head) {
+/*@
+    logic integer length(struct node *head) = 1 + length(head->next);
+*/
+
+/*@
+    inductive linked_list(struct node *head) {
       case empty:
         linked_list(\null);
 
-      case non_empty:
+      case node:
         \forall struct node *n;
           linked_list(n->next) ==> linked_list(n);
     }
 */
 
-
-/*@
-    logic integer length(struct node *head) =
-        1 + length(head->next);
-*/
 
 /*@
     inductive reachable(struct node *root, struct node *node) {
@@ -32,15 +32,15 @@ struct node {
                 reachable(root->next, node) ==>
                     reachable(root, node);
     }
-*/
 
-/*@
     predicate finite(struct node *root) = reachable(root, \null);
 */
 
+// TODO: add finite into definition of linked_list?
+
 /* lemma finite_list_length:
       \forall struct node *l;
-        linked_list(l) ==> finite(l);
+        finite(l) ==> linked_list(l);
 */
 
 /* lemma length_null_zero:
@@ -62,7 +62,7 @@ struct node {
     }
 */
 
-/*
+/*@
     requires linked_list(head);
     requires finite(head);
 
@@ -74,7 +74,7 @@ int length(struct node *head) {
     int len = 0;
     struct node *p = head;
 
-    /*
+    /*@
       loop invariant linked_list(p);
       loop invariant len >= 0;
       loop invariant len + length(p) == length(head);
@@ -86,7 +86,9 @@ int length(struct node *head) {
         p = p->next;
     }
 
-    //@ assert \false;
+    //@ assert len <= length(head);
+    //@ assert len >= 0;
+
     return len;
 }
 
