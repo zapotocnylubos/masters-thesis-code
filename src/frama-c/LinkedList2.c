@@ -6,7 +6,8 @@ struct node {
 };
 
 /*@
-    logic integer length(struct node *head) = 1 + length(head->next);
+    logic integer length(struct node *head) =
+      head == \null ? 0 : 1 + length(head->next);
 */
 
 /*@
@@ -79,17 +80,15 @@ int length(struct node *head) {
       loop invariant linked_list(p);
       loop invariant len >= 0;
       loop invariant len + length(p) == length(head);
+
       loop assigns len, p;
+
       loop variant length(p);
     */
     while (p != NULL) {
         len++;
         p = p->next;
     }
-
-    // -65 fails to prove, but -64 succeeds to prove??
-    //@ assert len <= length(head) - 65;
-    // assert len >= 1;
 
     return len;
 }
