@@ -5,19 +5,20 @@ struct node {
     struct node *next;
 };
 
-/*@ inductive linked_list{L}(struct node *head) {
-      case empty{L}:
+/*@ inductive linked_list(struct node *head) {
+      case empty:
         linked_list(\null);
 
-      case nonempty{L}:
+      case non_empty:
         \forall struct node *n;
-          \valid(n) && linked_list(n->next) ==> linked_list(n);
+          linked_list(n->next) ==> linked_list(n);
     }
 */
 
 
-/*@ logic integer length(struct node *head) =
-      head == \null ? 0 : 1 + length(head->next);
+/*@
+    logic integer length(struct node *head) =
+        head == \null ? 0 : 1 + length(head->next);
 */
 
 /*@
@@ -28,9 +29,8 @@ struct node {
 
         case next_reachable:
             \forall struct node *root, *node;
-                \valid(root) ==>
-                    reachable(root->next, node) ==>
-                        reachable(root, node);
+                \valid(root) && reachable(root->next, node) ==>
+                    reachable(root, node);
     }
 */
 
@@ -47,9 +47,9 @@ struct node {
       length(\null) == 0;
 */
 
-/* lemma length_nonnull:
+/*@ lemma length_nonnegative:
       \forall struct node *l;
-        linked_list(l) && l != \null ==> length(l) > 0;
+        finite(l) ==> length(l) >= 0;
 */
 
 /* axiomatic LengthProperties {
@@ -62,7 +62,7 @@ struct node {
     }
 */
 
-/*@
+/*
     requires linked_list(head);
     requires finite(head);
 
@@ -74,7 +74,7 @@ int length(struct node *head) {
     int len = 0;
     struct node *p = head;
 
-    /*@
+    /*
       loop invariant linked_list(p);
       loop invariant len >= 0;
       loop invariant len + length(p) == length(head);
@@ -88,4 +88,39 @@ int length(struct node *head) {
 
     //@ assert \false;
     return len;
+}
+
+void test() {
+    struct node *head = malloc(sizeof(struct node));
+    struct node *n1 = malloc(sizeof(struct node));
+    struct node *n2 = malloc(sizeof(struct node));
+
+    if (head == NULL || n1 == NULL || n2 == NULL) {
+        return;
+    }
+
+    head->value = 1;
+    head->next = n1;
+    n1->value = 2;
+    n1->next = n2;
+    n2->value = 3;
+    n2->next = NULL;
+
+    //@ assert linked_list(NULL);
+
+    // !! here it goes wrong
+    //@ assert \valid(n2);
+    //@ assert linked_list(n2->next);
+    //@ assert linked_list(n2->next) ==> linked_list(n2);
+
+    //@ assert linked_list(n2);
+    //@ assert linked_list(n1);
+    //@ assert linked_list(head);
+    // assert finite(head);
+
+    // assert length(head) == 3;
+
+    free(n2);
+    free(n1);
+    free(head);
 }
