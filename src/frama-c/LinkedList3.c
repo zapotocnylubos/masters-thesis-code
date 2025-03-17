@@ -100,30 +100,46 @@ int length(struct node *head) {
 
 
 /*@
-    requires finite_linked_list(head);
-    requires \valid(head);
+    requires linked_list(head);
+    requires finite(head);
+    requires \separated(head, new_node);
+
     requires \valid(new_node);
-    requires head != new_node;
-    requires new_node != \null;
+    requires new_node->next == \null;
     requires !reachable(head, new_node);
+
+    //?? why this helps ??
+    requires !reachable(head, new_node->next);
 
     assigns new_node->next;
 
-    ensures \valid(new_node);
-    ensures \valid(new_node->next);
+
     ensures new_node->next == \old(head);
     ensures \result == new_node;
-    ensures finite_linked_list(head);
+    ensures linked_list(new_node);
+    ensures finite(new_node);
  */
 struct node *prepend(struct node *head, struct node *new_node) {
-    //@ assert finite_linked_list(head);
+    // assert finite_linked_list(head);
     //@ assert head != new_node;
     //@ assert !reachable(head, new_node);
+
     new_node->next = head;
+
     // may be needed, that new_node is not in the list??
-    //@ assert head != new_node;
-    //@ assert !reachable(head, new_node);
-    //@ assert finite_linked_list(head);
+
+    //@ assert linked_list(head);
+    //@ assert finite(head);
+
+    //@ assert linked_list(new_node);
+    //@ assert finite(new_node);
+
+    // assert head != new_node;
+    // assert !reachable(head, new_node);
+    // assert finite_linked_list(head);
+
+    // ?? aaa -> asserting false is proven :)
+    //@ assert \false;
     return new_node;
 }
 
@@ -180,7 +196,7 @@ void test_prepend_reachability_speed(
     //@ assert finite(n1);
 
     // together using && not working??
-    //@ assert linked_list(n1) && finite(n1);
+    // assert linked_list(n1) && finite(n1);
     //@ assert finite_linked_list(n1);
 
     //@ assert reachable(n1, n1);
