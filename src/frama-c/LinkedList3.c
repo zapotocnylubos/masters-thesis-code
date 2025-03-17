@@ -79,10 +79,18 @@ int length(struct node *head) {
     return len;
 }
 
+
+
 /*@
     requires finite_linked_list(head);
+    requires \valid(new_node);
+    requires \valid(head);
 
-    assigns *new_node, *head;
+    assigns new_node->next;
+
+    ensures \valid(head);
+    ensures \valid(head->next);
+    ensures linked_list(head->next);
 
     ensures finite_linked_list(new_node);
     ensures new_node->next == \old(head);
@@ -92,4 +100,17 @@ int length(struct node *head) {
 struct node *prepend(struct node *head, struct node *new_node) {
     new_node->next = head;
     return new_node;
+}
+
+
+
+/*@
+    requires \valid(p);
+
+    assigns *p;
+
+    ensures \valid(p);
+ */
+void can_ensure_valid_pointer(char *p) {
+    *p = 1;
 }
