@@ -162,7 +162,7 @@ void null_pointer_is_valid() {
     requires \valid(n2);
     requires \valid(n3);
  */
-void test_prepend_reachability(
+void test_prepend_reachability_speed(
         struct node *n0,
         struct node *n1,
         struct node *n2,
@@ -190,9 +190,4 @@ void test_prepend_reachability(
     //@ assert reachable(n0, n1);
     //@ assert reachable(n0, n2);
     //@ assert reachable(n0, n3);
-
-    free(n0);
-    free(n1);
-    free(n2);
-    free(n3);
 }
