@@ -104,6 +104,7 @@ int length(struct node *head) {
     requires \valid(head);
     requires \valid(new_node);
     requires head != new_node;
+    requires !reachable(head, new_node);
 
     assigns new_node->next;
 
@@ -119,6 +120,7 @@ struct node *prepend(struct node *head, struct node *new_node) {
     new_node->next = head;
     // may be needed, that new_node is not in the list??
     //@ assert head != new_node;
+    //@ assert !reachable(head, new_node);
     //@ assert finite_linked_list(head);
     return new_node;
 }
