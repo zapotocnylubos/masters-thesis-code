@@ -172,7 +172,11 @@ void test_prepend_reachability_speed(
     n2->next = n3;
     n3->next = NULL;
 
-    // assert finite_linked_list(n1);
+    // assert linked_list(n1);
+    // assert finite(n1);
+    // separatelly provable, in a predicate, not
+    //@ assert finite_linked_list(n1);
+
     //@ assert reachable(n1, n1);
 
     //@ assert \valid(n1);
@@ -181,7 +185,7 @@ void test_prepend_reachability_speed(
 
     //@ assert reachable(n1, n2);
     //@ assert reachable(n1, n3);
-    //@ assert !reachable(n1, n0);
+    // assert !reachable(n1, n0);
 
     n0->next = n1;
 
