@@ -175,6 +175,12 @@ void test_prepend_reachability_speed(
     // assert linked_list(n1);
     // assert finite(n1);
     // separatelly provable, in a predicate, not
+
+    //@ assert linked_list(n1);
+    //@ assert finite(n1);
+
+    // together using && not working??
+    //@ assert linked_list(n1) && finite(n1);
     //@ assert finite_linked_list(n1);
 
     //@ assert reachable(n1, n1);
