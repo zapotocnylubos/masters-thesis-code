@@ -31,8 +31,9 @@ struct node {
 
         case next_reachable:
             \forall struct node *root, *node;
-                \valid(root) && reachable(root->next, node) ==>
-                    reachable(root, node);
+                \valid(root) && \valid(root->next) &&
+                    reachable(root->next, node) ==>
+                        reachable(root, node);
     }
 
     predicate finite(struct node *root) = reachable(root, \null);
@@ -127,7 +128,6 @@ struct node *prepend(struct node *head, struct node *new_node) {
 }
 
 
-
 /*@
     requires \valid(p);
 
@@ -155,18 +155,30 @@ void null_pointer_is_valid() {
     //@ assert \valid(p);
 }
 
-void test_prepend_reachability() {
-    struct node *n0 = (struct node *) malloc(sizeof(struct node));
-    struct node *n1 = (struct node *) malloc(sizeof(struct node));
-    struct node *n2 = (struct node *) malloc(sizeof(struct node));
-    struct node *n3 = (struct node *) malloc(sizeof(struct node));
 
+/*@
+    requires \valid(n0);
+    requires \valid(n1);
+    requires \valid(n2);
+    requires \valid(n3);
+ */
+void test_prepend_reachability(
+        struct node *n0,
+        struct node *n1,
+        struct node *n2,
+        struct node *n3
+) {
     n1->next = n2;
     n2->next = n3;
     n3->next = NULL;
 
     // assert finite_linked_list(n1);
     //@ assert reachable(n1, n1);
+
+    //@ assert \valid(n1);
+    //@ assert \valid(n1->next);
+    //@ assert reachable(n1->next, n2);
+
     //@ assert reachable(n1, n2);
     //@ assert reachable(n1, n3);
     //@ assert !reachable(n1, n0);
