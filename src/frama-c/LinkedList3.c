@@ -31,9 +31,8 @@ struct node {
 
         case next_reachable:
             \forall struct node *root, *node;
-                \valid(root) && \valid(root->next) &&
-                    reachable(root->next, node) ==>
-                        reachable(root, node);
+                \valid(root) && reachable(root->next, node) ==>
+                    reachable(root, node);
     }
 
     predicate finite(struct node *root) = reachable(root, \null);
@@ -104,6 +103,7 @@ int length(struct node *head) {
     requires \valid(head);
     requires \valid(new_node);
     requires head != new_node;
+    requires new_node != \null;
     requires !reachable(head, new_node);
 
     assigns new_node->next;
@@ -117,6 +117,7 @@ int length(struct node *head) {
 struct node *prepend(struct node *head, struct node *new_node) {
     //@ assert finite_linked_list(head);
     //@ assert head != new_node;
+    //@ assert !reachable(head, new_node);
     new_node->next = head;
     // may be needed, that new_node is not in the list??
     //@ assert head != new_node;
@@ -146,4 +147,40 @@ void can_ensure_valid_pointer(char *p) {
     ensures finite_linked_list(head);
  */
 void can_ensure_not_broken_linked_list(struct node *head) {
+}
+
+void null_pointer_is_valid() {
+    // only in Z3
+    char *p = NULL;
+    //@ assert \valid(p);
+}
+
+void test_prepend_reachability() {
+    struct node *n0 = (struct node *) malloc(sizeof(struct node));
+    struct node *n1 = (struct node *) malloc(sizeof(struct node));
+    struct node *n2 = (struct node *) malloc(sizeof(struct node));
+    struct node *n3 = (struct node *) malloc(sizeof(struct node));
+
+    n1->next = n2;
+    n2->next = n3;
+    n3->next = NULL;
+
+    // assert finite_linked_list(n1);
+    //@ assert reachable(n1, n1);
+    //@ assert reachable(n1, n2);
+    //@ assert reachable(n1, n3);
+    //@ assert !reachable(n1, n0);
+
+    n0->next = n1;
+
+    // assert finite_linked_list(n0);
+    //@ assert reachable(n0, n0);
+    //@ assert reachable(n0, n1);
+    //@ assert reachable(n0, n2);
+    //@ assert reachable(n0, n3);
+
+    free(n0);
+    free(n1);
+    free(n2);
+    free(n3);
 }
