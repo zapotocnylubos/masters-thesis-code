@@ -115,7 +115,10 @@ int length(struct node *head) {
  */
 struct node *prepend(struct node *head, struct node *new_node) {
     //@ assert finite_linked_list(head);
+    //@ assert head != new_node;
     new_node->next = head;
+    // may be needed, that new_node is not in the list??
+    //@ assert head != new_node;
     //@ assert finite_linked_list(head);
     return new_node;
 }
