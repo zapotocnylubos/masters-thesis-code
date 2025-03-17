@@ -103,6 +103,7 @@ int length(struct node *head) {
     requires finite_linked_list(head);
     requires \valid(head);
     requires \valid(new_node);
+    requires head != new_node;
 
     assigns new_node->next;
 
@@ -113,7 +114,9 @@ int length(struct node *head) {
     ensures finite_linked_list(head);
  */
 struct node *prepend(struct node *head, struct node *new_node) {
-    //new_node->next = head;
+    //@ assert finite_linked_list(head);
+    new_node->next = head;
+    //@ assert finite_linked_list(head);
     return new_node;
 }
 
