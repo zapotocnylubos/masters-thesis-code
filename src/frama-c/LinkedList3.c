@@ -108,9 +108,11 @@ int length(struct node *head) {
 /*@
     requires linked_list(head);
     requires finite(head);
+    requires length(head) == 3;
 
     requires \valid(new_node);
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
 
 
     assigns new_node->next;
