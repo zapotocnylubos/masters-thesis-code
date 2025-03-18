@@ -245,3 +245,19 @@ void test_separation_two(char *a, char *b) {
 void test_separation_tset(char *a, char *b) {
     //@ assert a != b;
 }
+
+/*@
+    requires \valid(a);
+    requires \valid(b);
+    requires \valid(c);
+
+    requires \separated(a, {b, c});
+ */
+void test_separation_tset_3(char *a, char *b, char *c) {
+    //@ assert a != b;
+    //@ assert a != c;
+
+    // this is not defined by this \separated
+    // -> its not all-pairs separation clause
+    // assert b != c;
+}
