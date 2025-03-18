@@ -120,7 +120,7 @@ int length(struct node *head) {
 struct node *prepend(struct node *head, struct node *new_node) {
     // assert finite_linked_list(head);
 
-    //@ assert head != new_node;
+    // assert head != new_node;
     //@ assert head != new_node->next;
 
     //@ assert !reachable(head, new_node);
