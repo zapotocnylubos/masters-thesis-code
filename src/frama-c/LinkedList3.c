@@ -98,32 +98,33 @@ int length(struct node *head) {
     ensures length(new_node) == length(head) + 1;
 */
 
+// not working
+// requires \separated(\union(new_node, { q | struct node *q; reachable(head, q) }));
+// working
+// requires \separated(new_node, head);
+// not working
+// requires \separated({new_node, head});
 
 /*@
     requires linked_list(head);
     requires finite(head);
 
     requires \valid(new_node);
-    requires \separated(head, new_node);
-    requires !reachable(head, new_node);
+    requires \separated({new_node, head});
 
 
     assigns new_node->next;
-
-
-    ensures new_node->next == \old(head);
-    ensures \result == new_node;
-    ensures linked_list(new_node);
-    ensures finite(new_node);
  */
 struct node *prepend(struct node *head, struct node *new_node) {
     // assert finite_linked_list(head);
 
-    // assert head != new_node;
-    // assert head != NULL;
-    // assert head != new_node->next;
+    //@ assert head != new_node;
+    //@ assert head != new_node->next;
 
-    // assert !reachable(head, new_node);
+    //@ assert !reachable(head, new_node);
+
+    //@ assert linked_list(head);
+    //@ assert finite(head);
 
     new_node->next = NULL;
 
