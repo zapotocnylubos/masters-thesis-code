@@ -261,3 +261,18 @@ void test_separation_tset_3(char *a, char *b, char *c) {
     // -> its not all-pairs separation clause
     // assert b != c;
 }
+
+/*@
+    requires linked_list(head);
+    requires finite(head);
+
+    requires \valid(new_node);
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+ */
+void test_separation_linked_list(
+        struct node *head,
+        struct node *new_node
+) {
+    //@ assert head != new_node;
+    //@ assert !reachable(head, new_node);
+}
