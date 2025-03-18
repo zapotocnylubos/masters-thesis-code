@@ -121,9 +121,21 @@ struct node *prepend(struct node *head, struct node *new_node) {
 
     //@ assert head != \null ==> reachable(head, head->next);
 
-    new_node->next = head;
+    //@ assert linked_list(new_node);
+    //@ assert finite(new_node);
+
+    //@ assert linked_list(head);
+    //@ assert finite(head);
+
+    // new_node->next = head; // does not work
+    // struct node *a = head; // works
+    // new_node = head;       // works
+    // new_node->next = NULL; // does not work? (head broken)
 
     //@ assert head != \null ==> reachable(head, head->next);
+
+    //@ assert linked_list(head);
+    //@ assert finite(head);
 
     //@ assert linked_list(new_node);
     //@ assert finite(new_node);
@@ -310,7 +322,7 @@ void test_linked_list_assignment_does_not_break_reachability_2(
     requires finite(new_node);
 
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
-    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
+    requires \separated(new_node, { node->next | struct node *node; reachable(head, node) });
  */
 void test_linked_list_assignment_does_not_break_reachability_3(
         struct node *head,
@@ -321,4 +333,9 @@ void test_linked_list_assignment_does_not_break_reachability_3(
     struct node *a = head;
 
     //@ assert head != \null ==> reachable(head, head->next);
+}
+
+void test_null_is_linked_list() {
+    struct node *head = NULL;
+    //@ assert linked_list(head);
 }
