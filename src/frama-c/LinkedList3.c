@@ -110,7 +110,7 @@ int length(struct node *head) {
     requires finite(head);
 
     requires \valid(new_node);
-    requires \separated({new_node, head});
+    requires \separated(\union(new_node, head));
 
 
     assigns new_node->next;
@@ -218,4 +218,30 @@ void test_prepend_reachability_speed(
     //@ assert reachable(n0, n1);
     //@ assert reachable(n0, n2);
     //@ assert reachable(n0, n3);
+}
+
+/*@
+    requires \valid(a);
+    requires \valid(b);
+
+    requires \separated(a, b);
+ */
+void test_separation_two(char *a, char *b) {
+    //@ assert a != b;
+}
+
+
+// tset == sets of values
+// \separated ( location , locations-list )
+// location ::= tset
+// locations-list ::= location (, location)*
+
+/*@
+    requires \valid(a);
+    requires \valid(b);
+
+    requires \separated(a, {b});
+ */
+void test_separation_tset(char *a, char *b) {
+    //@ assert a != b;
 }
