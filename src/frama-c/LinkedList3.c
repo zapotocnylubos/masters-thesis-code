@@ -31,7 +31,8 @@ struct node {
 
         case next_reachable{L}:
             \forall struct node *root, *node;
-                 reachable(root->next, node) ==>
+                \valid(root) && \valid(node) &&
+                    reachable(root->next, node) ==>
                         reachable(root, node);
     }
 
@@ -379,13 +380,20 @@ void test_null_is_linked_list() {
     //@ assert linked_list(head);
 }
 
+// cant create \valid(\null) since it creates contradiction
+/*
+    requires \valid(p);
+    requires p == \null;
+ */
+void test_null_is_valid_ptr(char *p) {
+    //@ assert \false;
+}
+
 /*@
     requires linked_list(head);
     requires finite(head);
 
-    requires linked_list(new_node);
-    requires finite(new_node);
-    requires length(new_node) == 1;
+    requires \valid(new_node);
 
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
  */
@@ -401,7 +409,9 @@ void test_separated_write_does_not_change(
 
     //@ assert !reachable(head, new_node);
 
-    new_node->next = head;
+    //@ assert new_node != head;
+
+    new_node->next = new_node;
 
     //@ assert !reachable(head, new_node);
 
@@ -413,4 +423,10 @@ void test_separated_write_does_not_change(
 
     //@ assert linked_list(head);
     //@ assert finite(head);
+
+    //@ assert \false;
+}
+
+void test_contradiction() {
+    //@ assert \false;
 }
