@@ -264,7 +264,7 @@ void test_separation_linked_list(
     requires finite(head);
     requires head != \null;
  */
-void test_linked_list_assignment_does_not_break_rechability(
+void test_linked_list_assignment_does_not_break_reachability(
         struct node *head
 ) {
     //@ assert reachable(head, head->next);
@@ -272,4 +272,49 @@ void test_linked_list_assignment_does_not_break_rechability(
     struct node *a = head;
 
     //@ assert reachable(head, head->next);
+}
+
+
+// head must not be null, so that we can assert ->next
+/*@
+    requires linked_list(head);
+    requires finite(head);
+    requires head != \null;
+
+    requires linked_list(new_node);
+    requires finite(new_node);
+
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
+ */
+void test_linked_list_assignment_does_not_break_reachability_2(
+        struct node *head,
+        struct node *new_node
+) {
+    //@ assert reachable(head, head->next);
+
+    struct node *a = head;
+
+    //@ assert reachable(head, head->next);
+}
+
+/*@
+    requires linked_list(head);
+    requires finite(head);
+
+    requires linked_list(new_node);
+    requires finite(new_node);
+
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
+ */
+void test_linked_list_assignment_does_not_break_reachability_3(
+        struct node *head,
+        struct node *new_node
+) {
+    //@ assert head != \null ==> reachable(head, head->next);
+
+    struct node *a = head;
+
+    //@ assert head != \null ==> reachable(head, head->next);
 }
