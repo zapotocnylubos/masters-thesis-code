@@ -1,37 +1,43 @@
 #include <stdlib.h>
 
-typedef struct _Node {
+struct node {
     int value;
-
-    struct _Node *next;
-} Node;
-
-typedef struct {
-    Node *head;
-} MyList;
+    struct node *next;
+};
 
 /*@
-    logic integer length(MyList list) =
-        list.head == \null ? 0 : 1 + length((MyList){list.head->next});
+    logic integer length(struct node *head) =
+      head == \null ? 0 : 1 + length(head->next);
+*/
+
+/*@
+    inductive linked_list{L}(struct node *head) {
+      case empty{L}:
+        linked_list(\null);
+
+      case node{L}:
+        \forall struct node *n;
+          \valid(n) &&
+              linked_list(n->next) ==> linked_list(n);
+    }
 */
 
 
 /*@
-    inductive reachable{L}(Node *root, Node *node) {
+    inductive reachable{L}(struct node *root, struct node *node) {
         case root_reachable{L}:
-            \forall Node *root;
+            \forall struct node *root;
                 reachable(root, root);
 
         case next_reachable{L}:
-            \forall Node *root, *node;
+            \forall struct node *root, *node;
                 \valid(root) &&
                     reachable(root->next, node) ==>
                         reachable(root, node);
     }
 
-    predicate finite(MyList list) = reachable(list.head, \null);
+    predicate finite(struct node *root) = reachable(root, \null);
 */
-
 
 /*
     lemma prepend_lemma:
@@ -43,18 +49,29 @@ typedef struct {
  */
 
 /*@
-    requires finite(list);
+    requires linked_list(head);
 
-    ensures finite(\result);
+    requires \valid(new_node);
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+
+    assigns new_node->next;
  */
-MyList prepend(
-        MyList list,
-        int value
+struct node *prepend(
+        struct node *const head,
+        struct node *new_node
 ) {
-    Node *new_node = (Node *) malloc(sizeof(Node));
+    //@ assert linked_list(head);
 
-    new_node->value = value;
-    new_node->next = list.head;
+    new_node->next = head;
 
-    return (MyList){new_node};
+    //@ assert linked_list(head);
+    //@ assert linked_list(new_node);
+
+    //@ assert \false;
+
+    return new_node;
+}
+
+void test_contradiction() {
+    //@ assert \false;
 }
