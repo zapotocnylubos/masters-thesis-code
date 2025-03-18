@@ -110,7 +110,7 @@ int length(struct node *head) {
     requires finite(head);
 
     requires \valid(new_node);
-    requires \separated(\union(new_node, head));
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
 
 
     assigns new_node->next;
