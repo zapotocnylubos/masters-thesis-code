@@ -108,16 +108,17 @@ int length(struct node *head) {
 /*@
     requires linked_list(head);
     requires finite(head);
+    requires length(head) == 30;
 
     requires linked_list(new_node);
     requires finite(new_node);
+    requires length(new_node) == 1;
 
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
-    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
 
     assigns new_node->next;
  */
-struct node *prepend(struct node *head, struct node *new_node) {
+struct node *prepend(struct node * const head, struct node *new_node) {
 
     //@ assert head != \null ==> reachable(head, head->next);
 
@@ -131,6 +132,8 @@ struct node *prepend(struct node *head, struct node *new_node) {
     // struct node *a = head; // works
     // new_node = head;       // works
     // new_node->next = NULL; // does not work? (head broken)
+    // new_node = NULL;       // works
+    new_node->next = head;
 
     //@ assert head != \null ==> reachable(head, head->next);
 
@@ -139,6 +142,8 @@ struct node *prepend(struct node *head, struct node *new_node) {
 
     //@ assert linked_list(new_node);
     //@ assert finite(new_node);
+
+    //@ assert \false;
 
     return new_node;
 }
