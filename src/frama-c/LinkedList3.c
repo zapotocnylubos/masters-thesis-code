@@ -394,13 +394,19 @@ void test_separated_write_does_not_change(
         struct node *new_node
 ) {
     //@ assert head == \at(head, Pre);
+    //@ assert head->next != \null ==> head->next == \at(head->next, Pre);
+
     //@ assert linked_list(head);
     //@ assert finite(head);
 
     new_node->next = head;
 
     //@ assert head == \at(head, Pre);
-    //
+    //@ assert head->next != \null ==> head->next == \at(head->next, Pre);
+
     //@ assert linked_list{Pre}(head);
     //@ assert finite{Pre}(head);
+
+    //@ assert linked_list(head);
+    //@ assert finite(head);
 }
