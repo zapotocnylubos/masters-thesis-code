@@ -128,7 +128,7 @@ struct node *prepend(struct node *head, struct node *new_node) {
     //@ assert linked_list(head);
     //@ assert finite(head);
 
-    new_node->next = NULL;
+    new_node->next = head;
 
     // may be needed, that new_node is not in the list??
 
