@@ -106,9 +106,26 @@ int length(struct node *head) {
 // requires \separated({new_node, head});
 
 /*@
+    lemma reachable_transitive:
+        \forall struct node *a, *b, *c;
+            reachable(a, b) && reachable(b, c) ==>
+                reachable(a, c);
+ */
+
+/*@
+    lemma prepending_keeps_reachability:
+        \forall struct node *head, *node, *new_node;
+            linked_list(head) && finite(head) &&
+            reachable(head, node) &&
+            \valid(new_node) &&
+            new_node->next == head ==>
+                reachable(new_node, node);
+ */
+
+/*@
     requires linked_list(head);
     requires finite(head);
-    requires length(head) == 30;
+    requires length(head) < 10;
 
     requires linked_list(new_node);
     requires finite(new_node);
