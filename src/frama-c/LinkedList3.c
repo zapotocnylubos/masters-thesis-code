@@ -31,8 +31,7 @@ struct node {
 
         case next_reachable{L}:
             \forall struct node *root, *node;
-                \valid(root) &&
-                    reachable(root->next, node) ==>
+                 reachable(root->next, node) ==>
                         reachable(root, node);
     }
 
@@ -105,27 +104,44 @@ int length(struct node *head) {
 // not working
 // requires \separated({new_node, head});
 
-/*@
-    lemma reachable_transitive:
+/*@ axiomatic ReachableTransitive {
+    axiom reachable_transitive:
         \forall struct node *a, *b, *c;
             reachable(a, b) && reachable(b, c) ==>
                 reachable(a, c);
+    }
  */
 
-/*@
-    lemma prepending_keeps_reachability:
+/*@ axiomatic ReachablePrepending {
+    axiom prepending_keeps_reachability:
         \forall struct node *head, *node, *new_node;
-            linked_list(head) && finite(head) &&
-            reachable(head, node) &&
-            \valid(new_node) &&
-            new_node->next == head ==>
+            new_node->next == head &&
+            reachable(head, node) ==>
                 reachable(new_node, node);
+    }
+ */
+
+/*@ axiomatic PrependedNodeList {
+    axiom prepending_keeps_list:
+        \forall struct node *head, *new_node;
+            new_node->next == head &&
+            linked_list(head) ==>
+                linked_list(new_node);
+    }
+ */
+
+/*@ axiomatic PrependedNodeFinite {
+    axiom prepending_keeps_finite:
+        \forall struct node *head, *new_node;
+            new_node->next == head &&
+            finite(head) ==>
+                finite(new_node);
+    }
  */
 
 /*@
     requires linked_list(head);
     requires finite(head);
-    requires length(head) < 10;
 
     requires linked_list(new_node);
     requires finite(new_node);
