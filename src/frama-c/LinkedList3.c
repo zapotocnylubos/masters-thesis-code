@@ -113,22 +113,29 @@ int length(struct node *head) {
     requires finite(new_node);
 
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
-    requires \separated(new_node->next, { node | struct node *node; reachable(head, node) });
 
     assigns new_node->next;
  */
 struct node *prepend(struct node *head, struct node *new_node) {
     // assert finite_linked_list(head);
 
-    // assert head != new_node;
-    //@ assert head != new_node->next;
+    //@ assert head != new_node;
+    // assert head != new_node->next;
 
     //@ assert !reachable(head, new_node);
+    // assert !reachable(head, new_node->next);
 
     //@ assert linked_list(head);
     //@ assert finite(head);
 
     new_node->next = head;
+
+    //@ assert reachable(new_node, head);
+
+    //@ assert reachable(head, head);
+    //@ assert reachable(head, head->next);
+
+    //@ assert reachable(new_node, head->next);
 
     // may be needed, that new_node is not in the list??
 
