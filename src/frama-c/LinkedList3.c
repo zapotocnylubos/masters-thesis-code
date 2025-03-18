@@ -11,27 +11,27 @@ struct node {
 */
 
 /*@
-    inductive linked_list(struct node *head) {
-      case empty:
+    inductive linked_list{L}(struct node *head) {
+      case empty{L}:
         linked_list(\null);
 
-      case node:
+      case node{L}:
         \forall struct node *n;
-          \valid(n) && \valid(n->next) &&
+          \valid(n) &&
               linked_list(n->next) ==> linked_list(n);
     }
 */
 
 
 /*@
-    inductive reachable(struct node *root, struct node *node) {
-        case root_reachable:
+    inductive reachable{L}(struct node *root, struct node *node) {
+        case root_reachable{L}:
             \forall struct node *root;
                 reachable(root, root);
 
-        case next_reachable:
+        case next_reachable{L}:
             \forall struct node *root, *node;
-                \valid(root) && \valid(root->next) &&
+                \valid(root) &&
                     reachable(root->next, node) ==>
                         reachable(root, node);
     }
@@ -102,14 +102,11 @@ int length(struct node *head) {
 /*@
     requires linked_list(head);
     requires finite(head);
-    requires \separated(head, new_node);
 
     requires \valid(new_node);
-    requires new_node->next == \null;
+    requires \separated(head, new_node);
     requires !reachable(head, new_node);
 
-    //?? why this helps ??
-    requires !reachable(head, new_node->next);
 
     assigns new_node->next;
 
@@ -121,10 +118,14 @@ int length(struct node *head) {
  */
 struct node *prepend(struct node *head, struct node *new_node) {
     // assert finite_linked_list(head);
-    //@ assert head != new_node;
-    //@ assert !reachable(head, new_node);
 
-    new_node->next = head;
+    // assert head != new_node;
+    // assert head != NULL;
+    // assert head != new_node->next;
+
+    // assert !reachable(head, new_node);
+
+    new_node->next = NULL;
 
     // may be needed, that new_node is not in the list??
 
