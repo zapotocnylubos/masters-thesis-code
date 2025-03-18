@@ -142,6 +142,7 @@ int length(struct node *head) {
 /*@
     requires linked_list(head);
     requires finite(head);
+    requires length(head) < 30;
 
     requires linked_list(new_node);
     requires finite(new_node);
@@ -376,4 +377,30 @@ void test_linked_list_assignment_does_not_break_reachability_3(
 void test_null_is_linked_list() {
     struct node *head = NULL;
     //@ assert linked_list(head);
+}
+
+/*@
+    requires linked_list(head);
+    requires finite(head);
+
+    requires linked_list(new_node);
+    requires finite(new_node);
+    requires length(new_node) == 1;
+
+    requires \separated(new_node, { node | struct node *node; reachable(head, node) });
+ */
+void test_separated_write_does_not_change(
+        struct node *head,
+        struct node *new_node
+) {
+    //@ assert head == \at(head, Pre);
+    //@ assert linked_list(head);
+    //@ assert finite(head);
+
+    new_node->next = head;
+
+    //@ assert head == \at(head, Pre);
+    //
+    //@ assert linked_list{Pre}(head);
+    //@ assert finite{Pre}(head);
 }
