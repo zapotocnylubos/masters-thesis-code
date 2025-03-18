@@ -31,7 +31,7 @@ struct node {
 
         case next_reachable{L}:
             \forall struct node *root, *node;
-                \valid(root) && \valid(node) &&
+                \valid(root) &&
                     reachable(root->next, node) ==>
                         reachable(root, node);
     }
@@ -39,9 +39,17 @@ struct node {
     predicate finite(struct node *root) = reachable(root, \null);
 */
 
+/*
+    lemma prepend_lemma:
+        \forall struct node *head, *new_node;
+            linked_list(head) &&
+            !reachable(head, new_node) &&
+            new_node->next == head ==>
+                linked_list(new_node);
+ */
+
 /*@
     requires linked_list(head);
-    requires finite(head);
 
     requires \valid(new_node);
     requires \separated(new_node, { node | struct node *node; reachable(head, node) });
@@ -53,15 +61,13 @@ struct node *prepend(
         struct node *new_node
 ) {
     //@ assert linked_list(head);
-    //@ assert finite(head);
 
     new_node->next = head;
 
     //@ assert linked_list(head);
-    //@ assert finite(head);
-
     //@ assert linked_list(new_node);
-    //@ assert finite(new_node);
+
+    //@ assert \false;
 
     return new_node;
 }
