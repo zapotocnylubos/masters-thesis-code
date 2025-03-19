@@ -97,7 +97,7 @@ int list_length(List *head) {
     requires \valid(new_node);
     requires \separated(new_node, { node | List *node; reachable(head, node) });
 
-    assigns new_node->next;
+    assigns *new_node;
 
     ensures finite(\result);
  */
@@ -108,7 +108,15 @@ List *prepend(List *head, List *new_node) {
 
     //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
 
+    //@ assert reachable(head, \null);
+
+    //@ assert \forall List* node; reachable(head, node) ==> node != new_node;
+
     new_node->next = head;
+
+    //@ assert \forall List* node; reachable{Pre}(head, node) ==> reachable(head, node);
+
+    //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
 
     //@ assert length{Pre}(head) == length(head);
     //@ assert length(new_node) == 1 + length(head);
