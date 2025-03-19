@@ -6,6 +6,13 @@ typedef struct list {
     int value;
 } List;
 
+/*
+    logic set<List*> content{L}(List *root) =
+        root == \null ?
+            \empty :
+            \union({ root }, content{L}(root->next));
+ */
+
 /*@
     inductive reachable{L}(List *root, List *node) {
         case root_reachable{L}:
@@ -38,7 +45,7 @@ typedef struct list {
 }
 */
 
-/*@
+/*
     predicate is_same_list{L1, L2}(List *head) =
         \forall List *node;
             reachable{L1}(head, node) <==> reachable{L2}(head, node);
@@ -102,8 +109,8 @@ typedef struct list {
 /*@ requires finite(head);
     requires \valid(new_node);
     requires \separated(new_node, { node | List *node; reachable(head, node) });
-    requires \valid(new_node->next) ==> \separated(new_node->next, { node | List *node; reachable(head, node) });
 
+    assigns new_node->next \from head;
     assigns \result \from head, new_node;
 
     ensures finite(\result);
@@ -119,32 +126,37 @@ List *prepend(List *head, List *new_node) {
 
     //@ assert \forall List* node; reachable(head, node) ==> node != new_node;
 
+    // assert content{Pre}(head) == content{Here}(head);
+
     new_node->next = NULL;
 
-    //@ assert is_same_list{Pre, Here}(head);
-
-    //@ assert \forall List* node; reachable{Pre}(head, node) ==> reachable{Pre}(head, node);
-
-    //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
-
-    //@ assert length{Pre}(head) == length(head);
-    //@ assert length(new_node) == 1 + length(head);
-
-    //@ assert \forall List *node; reachable{Pre}(head, node) ==> reachable(head, node);
-
-    //@ assert \separated(new_node, head);
-    //@ assert head != \null ==> \separated(new_node, head->next);
-
-    //@ assert new_node == \at(new_node, Pre);
-
-    //@ assert \separated(new_node, { node | List *node; reachable{Pre}(head, node) });
-
-    //@ assert !reachable(head, new_node);
-
     //@ assert head == \at(head, Pre);
+    //@ assert head->next == \at(head->next, Pre);
 
-    //@ assert finite(\at(head, Pre));
-    //@ assert finite(head);
+    // assert is_same_list{Pre, Here}(head);
+
+    // assert \forall List* node; reachable{Pre}(head, node) ==> reachable{Pre}(head, node);
+    // assert \forall List* node; reachable{Pre}(head, node) ==> reachable{Here}(head, node);
+
+    // assert \separated(new_node, { node | List *node; reachable(head, node) });
+
+    // assert length{Pre}(head) == length(head);
+    // assert length(new_node) == 1 + length(head);
+
+    // assert \forall List *node; reachable{Pre}(head, node) ==> reachable(head, node);
+
+    // assert \separated(new_node, head);
+    // assert head != \null ==> \separated(new_node, head->next);
+
+    // assert new_node == \at(new_node, Pre);
+
+    // assert \separated(new_node, { node | List *node; reachable{Pre}(head, node) });
+
+    // assert !reachable(head, new_node);
+
+
+    // assert finite(\at(head, Pre));
+    // assert finite(head);
 
     //@ assert finite(new_node);
 
