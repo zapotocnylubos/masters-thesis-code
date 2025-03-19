@@ -83,7 +83,7 @@ int list_length(List *head) {
     return len;
 }
 
-/*@ axiomatic PrependLemma {
+/* axiomatic PrependLemma {
     axiom prepend_keeps_finite{L1, L2}:
         \forall List *head, *new_node;
             \at(new_node->next, L2) == head &&
@@ -94,17 +94,24 @@ int list_length(List *head) {
 
 /*@ requires finite(head);
     requires \valid(new_node);
+    requires \separated(new_node, { node | List *node; reachable(head, node) });
 
     assigns new_node->next;
  */
 List *prepend(List *head, List *new_node) {
-    //@ assert head != \null ==> reachable(head, head->next);
     //@ assert finite(head);
 
-    new_node->next = head;
+    //@ assert !reachable(head, new_node);
 
-    //@ assert head != \null ==> reachable(head, head->next);
+    new_node->next = NULL;
+
+    //@ assert !reachable(head, new_node);
+
+    //@ assert head == \at(head, Pre);
+
+    //@ assert finite(\at(head, Pre));
     //@ assert finite(head);
+
     //@ assert finite(new_node);
 
     //@ assert \false;
