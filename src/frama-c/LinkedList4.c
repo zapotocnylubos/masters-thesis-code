@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct list {
     struct list *next;
@@ -83,16 +84,6 @@ int list_length(List *head) {
     return len;
 }
 
-/*@
-  predicate in_list{L}(struct list* e, \list<struct list*> ll) =
-    \exists integer n ; 0 <= n < \length(ll) && \nth(ll, n) == e ;
-
-  lemma in_list_in_sublist:
-    \forall struct list* e, \list<struct list*> rl, ll, l ;
-    (rl ^ ll) == l ==>
-    (in_list(e, l) <==> (in_list(e, rl) || in_list(e, ll))) ;
-*/
-
 /* axiomatic PrependLemma {
     axiom prepend_keeps_finite{L1, L2}:
         \forall List *head, *new_node;
@@ -107,13 +98,24 @@ int list_length(List *head) {
     requires \separated(new_node, { node | List *node; reachable(head, node) });
 
     assigns new_node->next;
+
+    ensures finite(\result);
  */
 List *prepend(List *head, List *new_node) {
     //@ assert finite(head);
 
     //@ assert !reachable(head, new_node);
 
-    new_node->value = 1;
+    //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
+
+    new_node->next = head;
+
+    //@ assert \separated(new_node, head);
+    //@ assert head != \null ==> \separated(new_node, head->next);
+
+    //@ assert new_node == \at(new_node, Pre);
+
+    //@ assert \separated(new_node, { node | List *node; reachable{Pre}(head, node) });
 
     //@ assert !reachable(head, new_node);
 
@@ -127,4 +129,24 @@ List *prepend(List *head, List *new_node) {
     //@ assert \false;
 
     return new_node;
+}
+
+int main() {
+    List *head = NULL;
+    //@ assert finite(head);
+
+    List *new_node = malloc(sizeof(List));
+    if (!new_node) {
+        return 1;
+    }
+
+    List * new_head = prepend(head, new_node);
+    int len = list_length(new_head);
+
+    printf("Length: %d\n", len);
+
+    free(new_node);
+    free(head);
+
+    return 0;
 }
