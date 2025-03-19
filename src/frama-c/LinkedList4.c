@@ -114,7 +114,7 @@ List *prepend(List *head, List *new_node) {
 
     new_node->next = head;
 
-    //@ assert \forall List* node; reachable{Pre}(head, node) ==> reachable(head, node);
+    //@ assert \forall List* node; reachable{Pre}(head, node) ==> reachable{Pre}(head, node);
 
     //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
 
