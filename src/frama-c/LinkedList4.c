@@ -83,6 +83,16 @@ int list_length(List *head) {
     return len;
 }
 
+/*@
+  predicate in_list{L}(struct list* e, \list<struct list*> ll) =
+    \exists integer n ; 0 <= n < \length(ll) && \nth(ll, n) == e ;
+
+  lemma in_list_in_sublist:
+    \forall struct list* e, \list<struct list*> rl, ll, l ;
+    (rl ^ ll) == l ==>
+    (in_list(e, l) <==> (in_list(e, rl) || in_list(e, ll))) ;
+*/
+
 /* axiomatic PrependLemma {
     axiom prepend_keeps_finite{L1, L2}:
         \forall List *head, *new_node;
@@ -103,7 +113,7 @@ List *prepend(List *head, List *new_node) {
 
     //@ assert !reachable(head, new_node);
 
-    new_node->next = NULL;
+    new_node->value = 1;
 
     //@ assert !reachable(head, new_node);
 
