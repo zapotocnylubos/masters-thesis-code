@@ -23,16 +23,16 @@ typedef struct list {
 */
 
 /*@ axiomatic Length {
-    logic integer length(List *head);
+    logic integer length{L}(List *head);
 
-    axiom length_null: length(\null) == 0;
+    axiom length_null{L}: length(\null) == 0;
 
-    axiom length_list:
+    axiom length_list{L}:
         \forall List *head;
             \valid(head) && finite(head) ==>
                 length(head) == 1 + length(head->next);
 
-    axiom length_nonnegative:
+    axiom length_nonnegative{L}:
         \forall List *l;
             finite(l) ==> length(l) >= 0;
 }
@@ -109,6 +109,10 @@ List *prepend(List *head, List *new_node) {
     //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
 
     new_node->next = head;
+
+    //@ assert length{Pre}(head) == length(head);
+
+    //@ assert \forall List *node; reachable{Pre}(head, node) ==> reachable(head, node);
 
     //@ assert \separated(new_node, head);
     //@ assert head != \null ==> \separated(new_node, head->next);
