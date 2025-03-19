@@ -39,6 +39,12 @@ typedef struct list {
 */
 
 /*@
+    predicate is_same_list{L1, L2}(List *head) =
+        \forall List *node;
+            reachable{L1}(head, node) <==> reachable{L2}(head, node);
+ */
+
+/*@
     requires finite(head);
 
     terminates \true;
@@ -114,6 +120,8 @@ List *prepend(List *head, List *new_node) {
 
     new_node->next = head;
 
+    //@ assert is_same_list{Pre, Here}(head);
+
     //@ assert \forall List* node; reachable{Pre}(head, node) ==> reachable{Pre}(head, node);
 
     //@ assert \separated(new_node, { node | List *node; reachable(head, node) });
@@ -121,7 +129,6 @@ List *prepend(List *head, List *new_node) {
     //@ assert length{Pre}(head) == length(head);
     //@ assert length(new_node) == 1 + length(head);
 
-    //@ assert \exists List *node; reachable{Pre}(head, node) && !reachable(head, node);
     //@ assert \forall List *node; reachable{Pre}(head, node) ==> reachable(head, node);
 
     //@ assert \separated(new_node, head);
