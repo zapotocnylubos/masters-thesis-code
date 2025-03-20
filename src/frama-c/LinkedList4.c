@@ -7,10 +7,17 @@ typedef struct list {
 
 /*@
     logic set<List*> footprint{L}(List *root) =
-        \union({ root }, footprint{L}(root->next));
+        \union({ root }, (root == \null) ? \empty : footprint{L}(root->next));
  */
 
 /*@
+    predicate reachable{L}(List *root, List *node) =
+        root == node || (\valid(root) && reachable{L}(root->next, node));
+
+    predicate finite{L}(List *root) = reachable{L}(root, \null);
+ */
+
+/*
     inductive reachable{L}(List *root, List *node) {
         case root_reachable{L}:
             \forall List *root;
@@ -126,11 +133,11 @@ List *prepend(List *head, List *new_node) {
 
     // assert \subset(footprint{Here}(head), footprint{Pre}(head));
 
-    //@ assert footprint{Here}(new_node) == footprint{Pre}(new_node);
+    // assert footprint{Here}(new_node) == footprint{Pre}(new_node);
 
     new_node->next = head;
 
-    //@ assert footprint{Here}(new_node) == footprint{Pre}(new_node);
+    // assert footprint{Here}(new_node) == footprint{Pre}(new_node);
 
 
     //@ assert head == \at(head, Pre);
@@ -201,15 +208,18 @@ List *prepend(List *head, List *new_node) {
 //}
 
 
-/*@
-    requires finite(head);
-    requires length(head) == 0;
- */
-void test_list_footprint(
-        List *head
-) {
-    //@ assert \empty == \empty;
-    //@ assert footprint(\null) == footprint(\null);
-    // assert footprint(\null) == \empty;
-    //@ assert footprint(head) == footprint(head);
-}
+///*@
+//    requires finite(head);
+//    requires length(head) == 0;
+// */
+//void test_list_footprint(
+//        List *head
+//) {
+//    //@ assert \empty == \empty;
+//    //@ assert footprint(\null) == footprint(\null);
+//    //@ assert footprint(\null) == \empty;
+//    //@ assert footprint(head) == footprint(head);
+//    //@ assert \null \in { \null };
+//    //@ assert \null \in \empty;
+//    //@ assert \null \in footprint(\null);
+//}
