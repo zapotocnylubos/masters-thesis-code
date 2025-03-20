@@ -7,7 +7,9 @@ typedef struct list {
 
 /*@
     logic set<List*> footprint{L}(List *root) =
-        \union({ root }, (root == \null) ? \empty : footprint{L}(root->next));
+        root == \null ?
+            \union({ root }, footprint{L}(root->next)) :
+            { (List *)\null };
  */
 
 /*@
@@ -210,16 +212,46 @@ List *prepend(List *head, List *new_node) {
 
 ///*@
 //    requires finite(head);
-//    requires length(head) == 0;
+//    requires length(head) == 1;
+//    requires head->next == \null;
 // */
 //void test_list_footprint(
 //        List *head
 //) {
-//    //@ assert \empty == \empty;
-//    //@ assert footprint(\null) == footprint(\null);
-//    //@ assert footprint(\null) == \empty;
-//    //@ assert footprint(head) == footprint(head);
-//    //@ assert \null \in { \null };
-//    //@ assert \null \in \empty;
-//    //@ assert \null \in footprint(\null);
+//    // assert \empty == \empty;
+//    // assert footprint(\null) == footprint(\null);
+//    // assert footprint(\null) == \empty;
+//    // assert footprint(head) == footprint(head);
+//    // assert \null \in { \null };
+//    // assert \null \in \empty;
+//    // assert \null \in footprint(\null);
+//
+//    // assert \null \in footprint(head);
+//
+//    // can not have a set of void pointers. Ignoring code annotation
+//    // assert \null \in { head, head->next, \null};
+//
+//    // -> true
+//    // assert \null \in { head, head->next, (List *)\null};
+//
+//    // -> unknown
+//    // assert \null \in { head, (List *)head->next};
+//
+//    // -> true, unknown
+//    // assert head->next == \null;
+//    // assert \null \in { (List *)head, (List *)head->next };
+//
+//
+//    /*?? assert \null ∈ {(void *)head, (List *)\null}; */
+//    // assert \null \in { (List *)head, (List *)\null };
+//
+//    // assert \null ∈ {(List *)head, (List *)\null};
+//
+//    // -> unknown
+//    // assert \subset(\null, footprint(\null));
+//
+//    // -> true
+//    // assert \subset(\null, { \null });
+//
+//    //@ assert \subset(\null, footprint(\null));
 //}
