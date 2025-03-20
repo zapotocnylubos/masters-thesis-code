@@ -126,12 +126,15 @@ typedef struct list {
     assigns \nothing;
  */
 List prepend(List *head) {
+    //@ assert finite(head);
+
+    int v = 1;
+
     List a;
     a.value = 0;
     a.next = head;
 
     //@ assert finite(&a);
-
     return a;
 }
 
