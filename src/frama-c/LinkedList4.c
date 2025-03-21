@@ -1,7 +1,6 @@
 #include <stdlib.h>
 
 typedef struct list {
-    int value;
     struct list *next;
 } List;
 
@@ -123,19 +122,25 @@ typedef struct list {
 
 /*@
     requires finite(head);
-    assigns \nothing;
+    requires \valid(new_node);
+    requires \separated(new_node, { node | List *node; reachable(head, node) });
+
+    assigns new_node->next \from head;
  */
-List prepend(List *head) {
+List *prepend(List *head, List *new_node) {
     //@ assert finite(head);
 
-    int v = 1;
-
     List a;
-    a.value = 0;
-    a.next = head;
+    //a.value = 10;
+    //a.next = NULL;
 
     //@ assert finite(&a);
-    return a;
+
+    //new_node->next = head;
+
+    //@ assert finite(head);
+
+    return new_node;
 }
 
 
