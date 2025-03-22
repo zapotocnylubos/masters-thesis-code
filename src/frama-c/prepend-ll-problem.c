@@ -84,10 +84,10 @@ void prepend(List *head, List *new_node) {
     int x;
     List new_head;
     //@ assert finite(head);
-    //new_head.value = new_node->value;
-    //new_head.next = head;
+    new_head.value = new_node->value;
+    new_head.next = head;
 
-    //@ assert reachable(\at(head, Pre), \null);
+    //@ assert reachable(head, \null);
 
     //@ assert finite(head);
     // assert finite(&new_head);
