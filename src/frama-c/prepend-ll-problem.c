@@ -82,7 +82,7 @@ void test_reachable(List *head) {
  */
 void prepend(List *head, List *new_node) {
     int x;
-    //List new_head;
+    struct list new_head;
     //@ assert finite(head);
     //new_head.value = new_node->value;
     //new_head.next = head;
