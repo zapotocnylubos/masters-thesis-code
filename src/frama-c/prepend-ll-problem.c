@@ -74,22 +74,21 @@ typedef struct list {
 //    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
 
 /*@
-    requires finite(head);
+    requires finite(*head);
 
-    requires \valid(new_node);
-    requires !reachable(head, new_node);
+    requires finite(new_node);
+    requires length(new_node) == 1;
+    requires !reachable(*head, new_node);
+    requires !reachable(new_node, *head);
 
-    assigns new_node->next;
+    assigns *head;
 
-    ensures finite(\result);
+    ensures finite(*head);
  */
-List *prepend(List *head, List *new_node) {
-    //@ assert !reachable(head, new_node);
-    //@ assert finite(head);
-    new_node->next = head;
-    //@ assert !reachable(head, new_node);
-    //@ assert finite(head);
-    return new_node;
+void prepend(List **head, List *new_node) {
+    //new_node->next = *head;
+    new_node->next = NULL;
+    *head = new_node;
 }
 
 ///*@
