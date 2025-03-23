@@ -1,6 +1,6 @@
 #include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
+//#include <stdlib.h>
+//#include <stdio.h>
 
 typedef struct list {
     struct list *next;
@@ -29,7 +29,7 @@ typedef struct list {
 
         case next_reachable{L}:
             \forall List *root, *node;
-                \valid_read(root) &&
+                \valid(root) &&
                     reachable(root->next, node) ==>
                         reachable(root, node);
     }
@@ -56,68 +56,69 @@ typedef struct list {
 }
 */
 
+///*@
+//    requires \valid_read(head);
+//    requires finite(head);
+//    requires length(head) == 1;
+//
+//    assigns \nothing;
+//*/
+//void test_reachable(List *head) {
+//    //@ assert reachable(head, head);
+//    //@ assert reachable(head, head->next);
+//    // assert !reachable(head->next, head);
+//    //@ assert head->next == \null;
+//}
+
+//    requires \separated(new_node, { node | List *node; reachable(head, node) });
+//    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
+
 /*@
-    requires \valid_read(head);
-    requires finite(head);
-    requires length(head) == 1;
-
-    assigns \nothing;
-*/
-void test_reachable(List *head) {
-    //@ assert reachable(head, head);
-    //@ assert reachable(head, head->next);
-    // assert !reachable(head->next, head);
-    //@ assert head->next == \null;
-}
-
-
-/*@
-    requires \valid_read(head);
     requires finite(head);
 
-    requires \valid_read(new_node);
-    requires \separated(new_node, { node | List *node; reachable(head, node) });
-    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
+    requires \valid(new_node);
+    requires !reachable(head, new_node);
 
     assigns new_node->next;
 
     ensures finite(\result);
  */
 List *prepend(List *head, List *new_node) {
+    //@ assert !reachable(head, new_node);
     //@ assert finite(head);
     new_node->next = head;
+    //@ assert !reachable(head, new_node);
     //@ assert finite(head);
-
     return new_node;
 }
 
-/*@
-    requires \valid_read(head);
-    requires finite(head);
-
-    requires \valid_read(new_node);
-    requires \separated(new_node, { node | List *node; reachable(head, node) });
-    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
-
-    assigns { node->next | List *node; reachable(head, node) };
-
-    ensures finite(\result);
- */
-List *append(List *head, List *new_node) {
-    if (!head) {
-        head = new_node;
-        return head;
-    }
-
-    List *current = head;
-    while (current->next) {
-        current = current->next;
-    }
-
-    current->next = new_node;
-
-    return head;
-}
+///*@
+//    requires \valid_read(head);
+//    requires finite(head);
+//
+//    requires \valid_read(new_node);
+//    requires \separated(new_node, { node | List *node; reachable(head, node) });
+//    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
+//
+//    assigns { node->next | List *node; reachable(head, node) };
+//
+//    ensures finite(\result);
+// */
+//List *append(List *head, List *new_node) {
+//    if (!head) {
+//        head = new_node;
+//        return head;
+//    }
+//
+//    List *current = head;
+//    while (current->next) {
+//        current = current->next;
+//    }
+//
+//    current->next = new_node;
+//
+//    return head;
+//}
 
 void test_hardcoded_prepend_pointers() {
     List a, b, c;
