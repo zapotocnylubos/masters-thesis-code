@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 typedef struct list {
-    int value;
     struct list *next;
+    int value;
 } List;
 
 /*
@@ -77,25 +77,77 @@ void test_reachable(List *head) {
 
     requires \valid_read(new_node);
     requires \separated(new_node, { node | List *node; reachable(head, node) });
+    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
 
-    assigns \nothing;
+    assigns new_node->next;
+
+    ensures finite(\result);
  */
-void prepend(List *head, List *new_node) {
-    int x;
-    List new_head;
+List *prepend(List *head, List *new_node) {
     //@ assert finite(head);
-    new_head.value = new_node->value;
-    new_head.next = head;
-
-    //@ assert reachable(head, \null);
-
+    new_node->next = head;
     //@ assert finite(head);
-    // assert finite(&new_head);
-    return;
+
+    return new_node;
 }
 
-int main() {
-//    List *head;
+/*@
+    requires \valid_read(head);
+    requires finite(head);
+
+    requires \valid_read(new_node);
+    requires \separated(new_node, { node | List *node; reachable(head, node) });
+    requires \separated(&new_node->next, { node | List *node; reachable(head, node) });
+
+    assigns { node->next | List *node; reachable(head, node) };
+
+    ensures finite(\result);
+ */
+List *append(List *head, List *new_node) {
+    if (!head) {
+        head = new_node;
+        return head;
+    }
+
+    List *current = head;
+    while (current->next) {
+        current = current->next;
+    }
+
+    current->next = new_node;
+
+    return head;
+}
+
+void test_hardcoded_prepend_pointers() {
+    List a, b, c;
+    a.value = 1;
+    b.value = 2;
+    c.value = 3;
+
+    List *ap = &a, *bp = &b, *cp = &c;
+    ap->next = bp;
+    bp->next = cp;
+    cp->next = NULL;
+
+    List *head = ap;
+
+    //@ assert finite(head);
+    //@ assert length(head) == 3;
+
+    List d;
+    d.value = 4;
+    List *dp = &d;
+
+    dp->next = ap;
+    head = dp;
+
+    //@ assert finite(head);
+    //@ assert length(head) == 4;
+}
+
+//int main() {
+//    List *head = NULL;
 //    //@ assert finite(head);
 //
 //    List *new_node = (List *) malloc(sizeof(List));
@@ -104,7 +156,7 @@ int main() {
 //    }
 //    new_node->value = 10;
 //
-//    List new_head = prepend(head, new_node);
+//    head = prepend(head, new_node);
 //
 //    return 0;
-}
+//}
