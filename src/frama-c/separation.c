@@ -23,12 +23,34 @@ typedef struct list {
     predicate finite{L}(struct list *root) = reachable{L}(root, \null);
 */
 
+/*@ axiomatic Length {
+    logic integer length{L}(struct list *head);
+
+    axiom length_null{L}:
+        length(\null) == 0;
+
+    axiom length_list{L}:
+        \forall struct list *head;
+            \valid_read(head) && finite(head) ==>
+                length(head) == 1 + length(head->next);
+
+    axiom length_nonnegative{L}:
+        \forall struct list *l;
+            finite(l) ==> length(l) >= 0;
+}
+*/
+
+// length(head) < 3, timeout 5 -> ok
+// length(head) < 4, timout 5 -> not ok
+// length(head) < 4, timout 10 -> ok
+// length(head) < 5 -> not ok
+
 /*@
     requires finite(head);
+    requires length(head) < 4;
 
     requires \valid(new_node);
-    requires new_node->next == \null;
-    requires \separated(new_node, head);
+    requires \separated(new_node, { node | struct list *node; reachable(head, node) });
 
     ensures finite(\result);
  */
