@@ -28,17 +28,15 @@ typedef struct list {
 
     requires \valid(new_node);
     requires new_node->next == \null;
-    requires !reachable(head, new_node);
-    requires \separated(
-        {new_node, &new_node->next},
-        { node | struct list *node; reachable(head, node) },
-        { &node->next | struct list *node; reachable(head, node) }
-    );
+    requires \separated(new_node, head);
 
     ensures finite(\result);
  */
 struct list *prepend(struct list *head, struct list *new_node) {
+    //@ assert \separated(new_node, head);
     new_node->next = new_node;
+    //@ assert head == \at(head, Pre);
+    //@ assert \separated(new_node, head);
     //@ assert finite(\at(head, Pre));
     //@ assert finite(head);
 
