@@ -160,3 +160,6 @@ void test_hardcoded_prepend_pointers() {
 //
 //    return 0;
 //}
+
+// TODO: jak modelovat LL/Strom/Graf jednoduse? 2D pole - pripadne N*N 1D pole reprezentujici 2D pole
+// TODO: to by pak mohlo byt v ghost promenne a delat se dukazy na tom?
