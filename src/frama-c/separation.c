@@ -47,7 +47,7 @@ typedef struct list {
 
 /*@
     requires finite(head);
-    requires length(head) < 4;
+    requires length(head) < 5;
 
     requires \valid(new_node);
     requires \separated(new_node, { node | struct list *node; reachable(head, node) });

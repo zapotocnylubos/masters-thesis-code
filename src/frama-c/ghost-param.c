@@ -15,3 +15,4 @@ void function(int x) /*@ ghost (int parameter ) */ {
 void caller(void) {
     function(3) /*@ ghost (4) */ ;
 }
+
