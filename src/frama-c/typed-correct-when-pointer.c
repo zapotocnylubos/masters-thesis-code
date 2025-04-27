@@ -1,7 +1,8 @@
 void calc() {
-    int x = 0;
-    int *p = &x;
+    long long a;
+    int xw = 0;
+    int *p = &xw;
 
     *p = 1;
-    //@ assert x == 1;
+    //@ assert xw == 1;
 }
