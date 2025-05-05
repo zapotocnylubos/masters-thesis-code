@@ -174,7 +174,8 @@ List *prepend(List *head, int value) {
     // assert finite(head);
 
     // ---- this is the one
-    //@ admit \forall List *node; reachable{L0}(head, node) ==> finite(node);
+    // admit \forall List *node; reachable{L0}(head, node) ==> finite(node);
+    //@ admit \forall List *node; reachable(head, node) ==> finite(node);
     // ---- this is the one
 
     // assert \forall List *node; reachable(head, node) ==> finite(node);
