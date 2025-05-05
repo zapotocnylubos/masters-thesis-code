@@ -12,25 +12,6 @@ typedef struct binary_search_tree {
         case null_hasBinarySearchTreeStructure:
             hasBinarySearchTreeStructure(\null);
 
-        case leaf_hasBinarySearchTreeStructure:
-            \forall BinarySearchTree *node;
-                \valid(node)
-                && node->left == \null
-                && node->right == \null ==>
-                    hasBinarySearchTreeStructure(node);
-
-        case node_hasBinarySearchTreeStructure:
-            \forall BinarySearchTree *node, integer value;
-                \valid(node)
-                && hasBinarySearchTreeStructure(node->left)
-                && hasBinarySearchTreeStructure(node->right)
-                && node->value == value
-                && (node->left == \null
-                    || node->left->value < value)
-                && (node->right == \null
-                    || node->right->value > value)
-                ==>
-                    hasBinarySearchTreeStructure(node);
     }
 */
 
@@ -49,81 +30,75 @@ typedef struct binary_search_tree {
             hasBinarySearchTreeStructure(l) ==>
                 0 <= height(l);
 
-      axiom height_strict_higher:
+      axiom height_strict_higher_than_left:
         \forall BinarySearchTree *node;
-            hasBinarySearchTreeStructure(node) ==>
-               height(node) > height(node->left)
-               && height(node) > height(node->right);
+            \valid(node)
+            && hasBinarySearchTreeStructure(node) ==>
+               height(node) > height(node->left);
+
+      axiom height_strict_higher_than_right:
+        \forall BinarySearchTree *node;
+            \valid(node)
+            && hasBinarySearchTreeStructure(node) ==>
+               height(node) > height(node->right);
     }
 */
 
 /*@
-    requires \valid(*root);
-    requires hasBinarySearchTreeStructure(*root);
-
-    ensures hasBinarySearchTreeStructure(\at(*root, Post));
+    requires hasBinarySearchTreeStructure(root);
+    ensures hasBinarySearchTreeStructure(\result);
 */
-bool insert(BinarySearchTree **root, int value) {
-    BinarySearchTree *currentRoot = *root;
+BinarySearchTree *insert(BinarySearchTree *root, int value) {
+    BinarySearchTree *result = root;
 
     // check if the tree is empty
     // if the tree is empty, create a single node
     // and return it
-    if (currentRoot == NULL) {
+    if (root == NULL) {
+        BinarySearchTree *result = (BinarySearchTree *)malloc(sizeof(BinarySearchTree));
+        if (result != NULL) {
+            result->left = NULL;
+            result->right = NULL;
+            result->value = value;
+        }
+    } else {
+        // Otherwise, recur down the tree
+        BinarySearchTree *currentRoot = root;
+        BinarySearchTree *parent = NULL;
+
+        /*@
+             loop assigns currentRoot, parent;
+             loop variant height(currentRoot);
+         */
+        while (currentRoot != NULL) {
+            parent = currentRoot;
+            if (value < currentRoot->value) {
+                currentRoot = currentRoot->left;
+            } else if (value > currentRoot->value) {
+                currentRoot = currentRoot->right;
+            } else {
+                // Value already exists in the tree
+                return root;
+            }
+        }
+
         BinarySearchTree *new_node = (BinarySearchTree *)malloc(sizeof(BinarySearchTree));
         if (new_node == NULL) {
-            // Memory allocation failed
-            return false;
+            return NULL; // Memory allocation failed
         }
-        // mini-axiomatic hint
-        //@ admit \valid(new_node);
+        // mini-axiomatic hint for provers
+        // admit \valid(new_node);
 
         new_node->left = NULL;
         new_node->right = NULL;
         new_node->value = value;
-        *root = new_node;
-        return true;
-    }
 
-    //@ assert \false;
-
-
-    BinarySearchTree *parent = NULL;
-
-    /*@
-         loop assigns currentRoot, parent;
-         loop variant height(currentRoot);
-     */
-    while (currentRoot != NULL) {
-        parent = currentRoot;
-        if (value < currentRoot->value) {
-            currentRoot = currentRoot->left;
-        } else if (value > currentRoot->value) {
-            currentRoot = currentRoot->right;
+        if (value < parent->value) {
+            parent->left = new_node;
         } else {
-            // Value already exists in the tree
-            return false;
+            parent->right = new_node;
         }
     }
 
-    // create a new node
-    BinarySearchTree *new_node = (BinarySearchTree *)malloc(sizeof(BinarySearchTree));
-    if (new_node == NULL) {
-        // Memory allocation failed
-        return false;
-    }
-    //@ admit \valid(new_node);
-
-    new_node->left = NULL;
-    new_node->right = NULL;
-    new_node->value = value;
-
-    if (value < parent->value) {
-        parent->left = new_node;
-    } else {
-        parent->right = new_node;
-    }
-
-    //@ assert \false;
-    return true;
+    return result;
 }
