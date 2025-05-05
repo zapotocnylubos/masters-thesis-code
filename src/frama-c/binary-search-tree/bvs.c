@@ -85,6 +85,9 @@ bool insert(BinarySearchTree **root, int value) {
         return true;
     }
 
+    //@ assert \false;
+
+
     BinarySearchTree *parent = NULL;
 
     /*@

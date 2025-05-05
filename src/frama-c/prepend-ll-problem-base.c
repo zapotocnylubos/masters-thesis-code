@@ -13,9 +13,9 @@ typedef struct list {
 
         case next_reachable{L}:
             \forall List *root, *node;
-                \valid(root) &&
-                    reachable(root->next, node) ==>
-                        reachable(root, node);
+                \valid(root)
+                && reachable(root->next, node) ==>
+                    reachable(root, node);
     }
 */
 
@@ -43,15 +43,15 @@ typedef struct list {
 /*@
     requires \valid(head);
     requires finite(head);
+    requires length(head) <= 3;
 
     requires \valid(new_node);
-    requires \separated(new_node, { node | List *node; reachable(head, node) });
-    requires !reachable(head, new_node);
-
-    assigns new_node->next;
+    requires \separated(new_node, {
+        node | List *node; reachable(head, node)
+    });
 
     ensures finite(\result);
- */
+*/
 List *prepend(List *head, List *new_node) {
     new_node->next = head;
     return new_node;

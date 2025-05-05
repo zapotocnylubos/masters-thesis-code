@@ -1,5 +1,5 @@
 /*@
-    requires \valid(arr);
+    requires \valid(arr + (0..n - 1));
     requires n > 0;
 
     requires
@@ -19,11 +19,11 @@ int find_min(int *arr, int n) {
     int min = arr[0];
 
     /*@
-        loop invariant 0 <= i <= n;
+        loop invariant 1 <= i <= n;
         loop invariant
             \forall integer j;
                 0 <= j < i
-                    ==> arr[j] >= min;
+                    ==> min <= arr[j];
         loop assigns i, min;
         loop variant n - i;
     */
