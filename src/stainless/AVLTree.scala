@@ -188,7 +188,11 @@ case class Node
       case Node(v, rl, rr, _) =>
         Node(
           v,
-          Node(value, left, rl, 1 + int_max(left.height, rl.height)),
+          Node(
+            value,
+            left, rl,
+            1 + int_max(left.height, rl.height)
+          ),
           rr,
           1 + int_max(
             1 + int_max(left.height, rl.height),
@@ -209,7 +213,11 @@ case class Node
         Node(
           v,
           ll,
-          Node(value, lr, right, 1 + int_max(lr.height, right.height)),
+          Node(
+            value,
+            lr, right,
+            1 + int_max(lr.height, right.height)
+          ),
           1 + int_max(
             1 + int_max(lr.height, right.height),
             ll.height
