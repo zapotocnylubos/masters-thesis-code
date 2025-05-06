@@ -13,7 +13,7 @@
                 ==> arr[i] == \result
                 && \forall integer j;
                     0 <= j < n
-                        ==> arr[i] <= arr[j];
+                        ==> \result <= arr[j];
 */
 int find_min(int *arr, int n) {
     int min = arr[0];

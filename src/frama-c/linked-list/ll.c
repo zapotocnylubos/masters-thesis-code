@@ -161,8 +161,8 @@ List *prepend(List *head, int value) {
     L0:
     new_node->next = head;
 
-    //@ admit head != \null ==> footprint{L0}(head) == \union({ head }, footprint(head->next));
-    //@ assert head != \null ==> footprint(head) == \union({ head }, footprint(head->next));
+    // admit head != \null ==> footprint{L0}(head) == \union({ head }, footprint(head->next));
+    // assert head != \null ==> footprint(head) == \union({ head }, footprint(head->next));
 
     // assert head == \at(head, L0);
     // admit \forall List *node; reachable{L0}(head, node) <==> reachable(head, node);
@@ -175,7 +175,8 @@ List *prepend(List *head, int value) {
 
     // ---- this is the one
     // admit \forall List *node; reachable{L0}(head, node) ==> finite(node);
-    //@ admit \forall List *node; reachable(head, node) ==> finite(node);
+    // admit \forall List *node; reachable(head, node) ==> finite(node);
+    //@ admit \forall List *node; reachable{L0}(head, node) && finite{L0}(node) ==> finite(node);
     // ---- this is the one
 
     // assert \forall List *node; reachable(head, node) ==> finite(node);

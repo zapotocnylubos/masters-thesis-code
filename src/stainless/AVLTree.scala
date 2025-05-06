@@ -27,9 +27,14 @@ sealed abstract class AVLTree {
     case Node(v, l, r, _) => {
       l.hasBinarySearchTreeStructure &&
         r.hasBinarySearchTreeStructure &&
-        // Ensure that the AVL has a binary search tree structure
-        forall((x: Int) => l.content.contains(x) ==> x < v) &&
-        forall((x: Int) => r.content.contains(x) ==> x > v)
+        // Ensure that the AVL
+        //   has a binary search tree structure
+        forall((x: Int) =>
+          l.content.contains(x) ==> x < v
+        ) &&
+        forall((x: Int) =>
+          r.content.contains(x) ==> x > v
+        )
     }
   }
 
@@ -38,7 +43,8 @@ sealed abstract class AVLTree {
     case Node(v, l, r, _) => {
       l.hasAVLTreeStructure &&
         r.hasAVLTreeStructure &&
-        // Ensure that the height of the tree at most (at root) is Int.MaxValue
+        // Ensure that the height of the tree
+        //  is at most (at root) is Int.MaxValue
         l.height < Int.MaxValue &&
         r.height < Int.MaxValue &&
         // Ensure that the height of the tree is correct
@@ -54,7 +60,8 @@ sealed abstract class AVLTree {
     case Node(v, l, r, _) => {
       l.isBalanced &&
         r.isBalanced &&
-        // Ensure that the balance factor is within [-1, 1]
+        // Ensure that the balance factor
+        //   is within [-1, 1]
         balanceFactor >= -1 &&
         balanceFactor <= 1
     }
@@ -101,9 +108,9 @@ sealed abstract class AVLTree {
       }
     }
   }.ensuring(res =>
-    res.isAVLTree
-      && (res.height == height || res.height == height + 1)
-      && res.content == content ++ Set(x)
+    res.isAVLTree &&
+      (res.height == height || res.height == height + 1) &&
+      res.content == content ++ Set(x)
   )
 
   def delete(x: Int): AVLTree = {
@@ -132,9 +139,9 @@ sealed abstract class AVLTree {
       }
     }
   }.ensuring(res =>
-    res.isAVLTree
-      && (res.height == height || res.height == height - 1)
-      && res.content == content -- Set(x)
+    res.isAVLTree &&
+      (res.height == height || res.height == height - 1) &&
+      res.content == content -- Set(x)
   )
 }
 
