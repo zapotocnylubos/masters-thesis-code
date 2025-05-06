@@ -100,10 +100,16 @@ sealed abstract class AVLTree {
         if (x == v) this
         else if (x < v) {
           val newLeft = l.insert(x)
-          Node(v, newLeft, r, 1 + int_max(newLeft.height, r.height)).balance
+          Node(
+            v, newLeft, r,
+            1 + int_max(newLeft.height, r.height)
+          ).balance
         } else {
           val newRight = r.insert(x)
-          Node(v, l, newRight, 1 + int_max(l.height, newRight.height)).balance
+          Node(
+            v, l, newRight,
+            1 + int_max(l.height, newRight.height)
+          ).balance
         }
       }
     }
@@ -126,15 +132,24 @@ sealed abstract class AVLTree {
             case (Node(_, _, _, _), rn: Node) => {
               val m = rn.min
               val newRight = r.delete(m)
-              Node(m, l, newRight, 1 + int_max(l.height, newRight.height)).balance
+              Node(
+                m, l, newRight,
+                1 + int_max(l.height, newRight.height)
+              ).balance
             }
           }
         } else if (x < v) {
           val newLeft = l.delete(x)
-          Node(v, newLeft, r, 1 + int_max(newLeft.height, r.height)).balance
+          Node(
+            v, newLeft, r,
+            1 + int_max(newLeft.height, r.height)
+          ).balance
         } else {
           val newRight = r.delete(x)
-          Node(v, l, newRight, 1 + int_max(l.height, newRight.height)).balance
+          Node(
+            v, l, newRight,
+            1 + int_max(l.height, newRight.height)
+          ).balance
         }
       }
     }
@@ -164,7 +179,9 @@ case class Node
     }
   }.ensuring(res =>
     content.contains(res) &&
-      forall((x: Int) => (content.contains(x) && x != res) ==> x > res)
+      forall((x: Int) =>
+        (content.contains(x) && x != res) ==> x > res
+      )
   )
 
   def max: Int = {
@@ -175,7 +192,9 @@ case class Node
     }
   }.ensuring(res =>
     contains(res) &&
-      forall((x: Int) => (contains(x) && x != res) ==> x < res)
+      forall((x: Int) =>
+        (contains(x) && x != res) ==> x < res
+      )
   )
 
   def rotateLeft: Node = {
@@ -189,8 +208,7 @@ case class Node
         Node(
           v,
           Node(
-            value,
-            left, rl,
+            value, left, rl,
             1 + int_max(left.height, rl.height)
           ),
           rr,
@@ -214,8 +232,7 @@ case class Node
           v,
           ll,
           Node(
-            value,
-            lr, right,
+            value, lr, right,
             1 + int_max(lr.height, right.height)
           ),
           1 + int_max(
@@ -238,8 +255,14 @@ case class Node
           case Node(vlr, lrl, lrr, _) =>
             Node(
               vlr,
-              Node(v, ll, lrl, 1 + int_max(ll.height, lrl.height)),
-              Node(value, lrr, right, 1 + int_max(lrr.height, right.height)),
+              Node(
+                v, ll, lrl,
+                1 + int_max(ll.height, lrl.height)
+              ),
+              Node(
+                value, lrr, right,
+                1 + int_max(lrr.height, right.height)
+              ),
               1 + int_max(
                 1 + int_max(ll.height, lrl.height),
                 1 + int_max(lrr.height, right.height)
@@ -261,8 +284,14 @@ case class Node
           case Node(vrl, rll, rlr, _) =>
             Node(
               vrl,
-              Node(value, left, rll, 1 + int_max(left.height, rll.height)),
-              Node(v, rlr, rr, 1 + int_max(rlr.height, rr.height)),
+              Node(
+                value, left, rll,
+                1 + int_max(left.height, rll.height)
+              ),
+              Node(
+                v, rlr, rr,
+                1 + int_max(rlr.height, rr.height)
+              ),
               1 + int_max(
                 1 + int_max(left.height, rll.height),
                 1 + int_max(rlr.height, rr.height)
@@ -285,5 +314,5 @@ case class Node
       if (left.balanceFactor == 1) rotateLeftRight
       else rotateRight
     } else this
-  }.ensuring(res => res.isAVLTree && res.content == content)
+  }.ensuring(res => res.content == content && res.isAVLTree)
 }
