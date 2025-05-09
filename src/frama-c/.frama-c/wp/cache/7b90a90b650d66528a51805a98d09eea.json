@@ -1,2 +1,0 @@
-{ "prover": "Z3:4.8.12", "verdict": "valid", "time": 0.022278,
-  "steps": 71961 }
