@@ -10,16 +10,19 @@
     ensures
         \exists integer i;
             0 <= i < n
-                ==> arr[i] == \result
-                && \forall integer j;
-                    0 <= j < n
-                        ==> \result <= arr[j];
+            && arr[i] == \result
+            && \forall integer j;
+                0 <= j < n
+                    ==> \result <= arr[j];
 */
 int find_min(int *arr, int n) {
     int min = arr[0];
 
     /*@
         loop invariant 1 <= i <= n;
+        loop invariant \exists integer j;
+            0 <= j < i
+                && arr[j] == min;
         loop invariant
             \forall integer j;
                 0 <= j < i
